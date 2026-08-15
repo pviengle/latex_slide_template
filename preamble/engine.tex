@@ -1,0 +1,55 @@
+% ============================================================================
+%  preamble/engine.tex  --  make one source file work on all three engines
+% ----------------------------------------------------------------------------
+%  LaTeX has three modern compilers and they handle fonts completely
+%  differently:
+%
+%    pdfLaTeX   old, fast, uses pre-built Type1 fonts. Cannot read .ttf/.otf
+%               files, so it CANNOT use Sarabun.
+%    XeLaTeX    can use any .ttf/.otf font on disk. Needed for Sarabun.
+%    LuaLaTeX   same font abilities as XeLaTeX, plus scripting.
+%
+%  This file detects which one is running and sets up the text encoding
+%  accordingly, so the same main.tex compiles under any of them with no edits.
+% ============================================================================
+
+\usepackage{iftex}
+
+\ifPDFTeX
+  % ------------------------------------------------------------------------
+  %  pdfLaTeX branch
+  %  T1 fontenc gives proper accented characters and correct hyphenation.
+  %
+  %  NOTE: \usepackage[utf8]{inputenc} is deliberately NOT loaded.
+  %  UTF-8 has been LaTeX's default input encoding since the 2018 release,
+  %  so that line is a no-op on any current TeX Live -- and it is an error
+  %  under XeLaTeX/LuaLaTeX. Leaving it out keeps this file engine-neutral.
+  % ------------------------------------------------------------------------
+  \usepackage[T1]{fontenc}
+\else
+  % ------------------------------------------------------------------------
+  %  XeLaTeX / LuaLaTeX branch
+  %  fontspec is what lets LaTeX open .ttf/.otf files directly.
+  % ------------------------------------------------------------------------
+  \usepackage{fontspec}
+  \defaultfontfeatures{Ligatures=TeX}
+\fi
+
+% ---------------------------------------------------------------------------
+%  TYPEFACES
+%  Fira Sans ships with TeX Live in BOTH Type1 and OpenType form, and these
+%  two packages pick the right one for whichever engine is running. That is
+%  why the same two lines work everywhere and do not need to be inside the
+%  branch above.
+% ---------------------------------------------------------------------------
+\usepackage[sfdefault]{FiraSans}   % body + headings
+\usepackage{FiraMono}              % code; sets \ttdefault by itself
+
+\renewcommand{\familydefault}{\sfdefault}
+
+% ---------------------------------------------------------------------------
+%  MATHS
+%  Fira has no matching maths font, so maths stays in Computer Modern. That
+%  is deliberate: it is what most maths papers look like and it reads well
+%  on a projector.
+% ---------------------------------------------------------------------------

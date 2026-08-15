@@ -1,0 +1,52 @@
+% ============================================================================
+%  preamble/macros.tex  --  your own shortcuts
+% ----------------------------------------------------------------------------
+%  This file is yours to edit. The ones below are examples that earn their
+%  keep on slides; delete anything you do not use.
+% ============================================================================
+
+% ---------------------------------------------------------------------------
+%  Emphasis
+% ---------------------------------------------------------------------------
+\newcommand{\hl}[1]{\textcolor{BrandAccent}{\textbf{#1}}}   % highlight
+\newcommand{\muted}[1]{\textcolor{BrandMuted}{#1}}          % de-emphasise
+% NOTE: do not name this one \dim -- \dim is already a standard maths
+% operator (as in "\dim V" for the dimension of a vector space).
+
+% ---------------------------------------------------------------------------
+%  A two-column slide body.
+%      \twocol{left content}{right content}
+%      \twocol[0.6]{wider left}{narrower right}
+% ---------------------------------------------------------------------------
+%  The right-hand width is worked out by SUBTRACTING the left from the full
+%  width. Writing it as (1-#1)\textwidth looks natural but is not valid
+%  \dimexpr syntax and fails with "Illegal unit of measure".
+\newcommand{\twocol}[3][0.5]{%
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{\dimexpr#1\textwidth-0.5em\relax}#2\end{column}
+    \hfill
+    \begin{column}{\dimexpr\textwidth-#1\textwidth-0.5em\relax}#3\end{column}
+  \end{columns}%
+}
+
+% ---------------------------------------------------------------------------
+%  A slide holding one big idea, vertically centred and large.
+%      \statementframe{The result we care about}
+% ---------------------------------------------------------------------------
+\newcommand{\statementframe}[1]{%
+  \begin{frame}[plain]
+    \vfill
+    \begin{center}
+      {\Large\bfseries\color{BrandPrimary}#1}
+    \end{center}
+    \vfill
+  \end{frame}%
+}
+
+% ---------------------------------------------------------------------------
+%  Credit line for a figure, set small and muted under the image.
+%      \source{Smith et al., 2024}
+% ---------------------------------------------------------------------------
+\newcommand{\source}[1]{%
+  \par\vspace{0.4em}{\scriptsize\color{BrandMuted}Source: #1}%
+}

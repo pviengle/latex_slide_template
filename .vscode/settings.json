@@ -1,0 +1,73 @@
+{
+  // ==========================================================================
+  //  LaTeX Workshop settings
+  //  These let you build with the extension's own toolbar as well as with the
+  //  scripts in scripts/. Both routes honour each deck's .latexmkrc.
+  // ==========================================================================
+
+  // Run latexmk from the folder holding main.tex, so the deck's own
+  // .latexmkrc is picked up (that is what sets TEXINPUTS and the engine).
+  "latex-workshop.latex.rootFile.useSubFile": true,
+  "latex-workshop.latex.autoBuild.run": "onFileChange",
+
+  "latex-workshop.latex.recipes": [
+    {
+      "name": "latexmk (deck default)",
+      "tools": ["latexmk"]
+    },
+    {
+      "name": "latexmk (XeLaTeX - Thai/Sarabun)",
+      "tools": ["latexmk-xe"]
+    },
+    {
+      "name": "latexmk (LuaLaTeX)",
+      "tools": ["latexmk-lua"]
+    }
+  ],
+
+  "latex-workshop.latex.tools": [
+    {
+      "name": "latexmk",
+      "command": "latexmk",
+      "args": ["-interaction=nonstopmode", "-synctex=1", "%DOC%"],
+      "env": {}
+    },
+    {
+      "name": "latexmk-xe",
+      "command": "latexmk",
+      "args": ["-xelatex", "-interaction=nonstopmode", "-synctex=1", "%DOC%"],
+      "env": {}
+    },
+    {
+      "name": "latexmk-lua",
+      "command": "latexmk",
+      "args": ["-lualatex", "-interaction=nonstopmode", "-synctex=1", "%DOC%"],
+      "env": {}
+    }
+  ],
+
+  // Intermediates live in each deck's out/ folder.
+  "latex-workshop.latex.outDir": "%DIR%/out",
+
+  // Keep the explorer readable without deleting anything.
+  "latex-workshop.latex.autoClean.run": "never",
+
+  "files.associations": {
+    "*.tex": "latex",
+    "*.sty": "latex",
+    "*.def": "latex",
+    ".latexmkrc": "perl"
+  },
+
+  // The vendored fonts and build output are noise while writing slides.
+  "files.exclude": {
+    "**/out": true,
+    "**/build": true
+  },
+
+  "[latex]": {
+    "editor.wordWrap": "on",
+    "editor.rulers": [80],
+    "editor.tabSize": 2
+  }
+}

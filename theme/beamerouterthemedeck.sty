@@ -1,0 +1,104 @@
+% ============================================================================
+%  beamerouterthemedeck.sty  --  everything AROUND the slide edge
+% ----------------------------------------------------------------------------
+%  Frame title bar, footer, slide numbers, progress bar.
+% ============================================================================
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{beamerouterthemedeck}[2026/08/15 v1.0 Beamer outer]
+
+\mode<presentation>
+\RequirePackage{pgfmath}
+
+% ---------------------------------------------------------------------------
+%  Theme options
+%     noprogressbar  -- hide the thin progress bar along the bottom
+%     nofooter       -- hide the footer line entirely
+%  Used as:  \usetheme[noprogressbar]{deck}
+% ---------------------------------------------------------------------------
+\newif\ifdeck@progressbar \deck@progressbartrue
+\newif\ifdeck@footer      \deck@footertrue
+
+\DeclareOptionBeamer{noprogressbar}{\deck@progressbarfalse}
+\DeclareOptionBeamer{nofooter}{\deck@footerfalse}
+\ProcessOptionsBeamer
+
+% ---------------------------------------------------------------------------
+%  Beamer's navigation icons are clutter on a projector. Off by default.
+% ---------------------------------------------------------------------------
+\setbeamertemplate{navigation symbols}{}
+
+% ---------------------------------------------------------------------------
+%  FRAME TITLE
+%  Title text, an optional subtitle, and a thin rule underneath.
+% ---------------------------------------------------------------------------
+\setbeamertemplate{frametitle}{%
+  \nointerlineskip
+  \begin{beamercolorbox}[wd=\paperwidth, leftskip=\beamer@leftmargin,
+                         rightskip=\beamer@rightmargin,
+                         ht=3.2ex, dp=1.6ex]{frametitle}
+    \usebeamerfont{frametitle}\insertframetitle%
+    \ifx\insertframesubtitle\empty\else
+      \\[-0.4ex]{\usebeamerfont{framesubtitle}%
+                 \usebeamercolor[fg]{framesubtitle}\insertframesubtitle}%
+    \fi
+  \end{beamercolorbox}%
+  \nointerlineskip
+  \hspace*{\beamer@leftmargin}%
+  {\color{BrandRule}%
+   \rule{\dimexpr\paperwidth-\beamer@leftmargin-\beamer@rightmargin\relax}{0.6pt}}%
+  \vspace{1.2ex}
+}
+
+% ---------------------------------------------------------------------------
+%  PROGRESS BAR
+%  Drawn as two overlapping rules: a full-width track, with the filled
+%  portion laid on top of it. \rlap puts the track down without advancing
+%  the cursor, so the fill starts at the same x position.
+%
+%  On the very first compiler run \inserttotalframenumber is 0, which would
+%  be a division by zero -- hence the guard. latexmk reruns and it settles.
+% ---------------------------------------------------------------------------
+\newcommand{\deck@progressline}{%
+  \ifnum\inserttotalframenumber>0\relax
+    \pgfmathsetmacro{\deck@frac}{\insertframenumber/\inserttotalframenumber}%
+    \rlap{\color{BrandRule}\rule{\paperwidth}{1pt}}%
+    {\color{BrandAccent}\rule{\deck@frac\paperwidth}{1pt}}%
+  \else
+    \rlap{\color{BrandRule}\rule{\paperwidth}{1pt}}\hspace*{\paperwidth}%
+  \fi
+}
+
+% ---------------------------------------------------------------------------
+%  FOOTER
+%  Left: short title.   Centre: short author.   Right: slide N / total.
+% ---------------------------------------------------------------------------
+\ifdeck@footer
+  \setbeamertemplate{footline}{%
+    \ifdeck@progressbar
+      \nointerlineskip
+      \leavevmode\deck@progressline\par
+    \fi
+    \nointerlineskip
+    \begin{beamercolorbox}[wd=\paperwidth, ht=2.6ex, dp=1.4ex,
+                           leftskip=\beamer@leftmargin,
+                           rightskip=\beamer@rightmargin]{footline}
+      \usebeamerfont{footline}%
+      \insertshorttitle%
+      \hfill
+      \insertshortauthor%
+      \hfill
+      \insertframenumber\,/\,\inserttotalframenumber%
+    \end{beamercolorbox}%
+  }
+\else
+  \setbeamertemplate{footline}{}
+\fi
+
+% ---------------------------------------------------------------------------
+%  MARGINS  --  a touch wider than beamer's default; 16:9 slides can take it
+% ---------------------------------------------------------------------------
+\setbeamersize{text margin left=8mm, text margin right=8mm}
+
+\mode<all>
+\endinput

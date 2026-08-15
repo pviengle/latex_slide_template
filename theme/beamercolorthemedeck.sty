@@ -1,0 +1,91 @@
+% ============================================================================
+%  beamercolorthemedeck.sty  --  the palette
+% ----------------------------------------------------------------------------
+%  EDIT THE BLOCK BELOW TO REBRAND THE WHOLE DECK.
+%  Everything further down is derived from these seven colours, so changing
+%  them here changes every slide consistently. You should not need to touch
+%  anything below the "DERIVED" line.
+% ============================================================================
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{beamercolorthemedeck}[2026/08/15 v1.0 Beamer colours]
+
+\mode<presentation>
+\RequirePackage{xcolor}
+
+% ###########################################################################
+% ##  BRAND PALETTE  --  >>> REPLACE THESE HEX VALUES WITH YOUR OWN <<<     ##
+% ###########################################################################
+
+\definecolor{BrandPrimary}{HTML}{14375A}   % headings, title bar, structure
+\definecolor{BrandAccent} {HTML}{2E9E8F}   % highlights, links, emphasis
+\definecolor{BrandAlert}  {HTML}{C4453B}   % warnings, \alert{}, alerted blocks
+\definecolor{BrandInk}    {HTML}{1A1A1A}   % body text
+\definecolor{BrandMuted}  {HTML}{6B7280}   % footer, captions, de-emphasis
+\definecolor{BrandPaper}  {HTML}{FFFFFF}   % slide background
+\definecolor{BrandWash}   {HTML}{F4F6F8}   % block backgrounds, code background
+
+% ###########################################################################
+% ##  DERIVED  --  no need to edit below this line                         ##
+% ###########################################################################
+
+% Lighter tints, computed from the brand colours so they always stay in family.
+\colorlet{BrandPrimaryLight}{BrandPrimary!12!BrandPaper}
+\colorlet{BrandAccentLight} {BrandAccent!14!BrandPaper}
+\colorlet{BrandAlertLight}  {BrandAlert!12!BrandPaper}
+\colorlet{BrandRule}        {BrandPrimary!25!BrandPaper}
+
+% --- Foundations ------------------------------------------------------------
+\setbeamercolor{normal text}{fg=BrandInk,   bg=BrandPaper}
+\setbeamercolor{structure}  {fg=BrandPrimary}
+\setbeamercolor{alerted text}{fg=BrandAlert}
+\setbeamercolor{example text}{fg=BrandAccent}
+
+% --- Title slide ------------------------------------------------------------
+\setbeamercolor{title}    {fg=BrandPrimary}
+\setbeamercolor{subtitle} {fg=BrandMuted}
+\setbeamercolor{author}   {fg=BrandInk}
+\setbeamercolor{institute}{fg=BrandMuted}
+\setbeamercolor{date}     {fg=BrandMuted}
+\setbeamercolor{titlerule}{bg=BrandAccent}
+
+% --- Frame title bar --------------------------------------------------------
+\setbeamercolor{frametitle}   {fg=BrandPrimary, bg=BrandPaper}
+\setbeamercolor{framesubtitle}{fg=BrandMuted,   bg=BrandPaper}
+
+% --- Section divider slides -------------------------------------------------
+\setbeamercolor{section title}   {fg=BrandPrimary}
+\setbeamercolor{section number}  {fg=BrandPaper, bg=BrandAccent}
+
+% --- Footer -----------------------------------------------------------------
+\setbeamercolor{footline}      {fg=BrandMuted, bg=BrandPaper}
+\setbeamercolor{progress bar}  {fg=BrandAccent, bg=BrandRule}
+
+% --- Blocks -----------------------------------------------------------------
+\setbeamercolor{block title}        {fg=BrandPaper, bg=BrandPrimary}
+\setbeamercolor{block body}         {fg=BrandInk,   bg=BrandPrimaryLight}
+\setbeamercolor{block title example}{fg=BrandPaper, bg=BrandAccent}
+\setbeamercolor{block body example} {fg=BrandInk,   bg=BrandAccentLight}
+\setbeamercolor{block title alerted}{fg=BrandPaper, bg=BrandAlert}
+\setbeamercolor{block body alerted} {fg=BrandInk,   bg=BrandAlertLight}
+
+% --- Lists ------------------------------------------------------------------
+\setbeamercolor{itemize item}      {fg=BrandAccent}
+\setbeamercolor{itemize subitem}   {fg=BrandAccent!70!BrandPaper}
+\setbeamercolor{itemize subsubitem}{fg=BrandMuted}
+\setbeamercolor{enumerate item}    {fg=BrandAccent}
+\setbeamercolor{description item}  {fg=BrandPrimary}
+
+% --- Theorems, captions, notes ---------------------------------------------
+\setbeamercolor{caption name}{fg=BrandPrimary}
+\setbeamercolor{bibliography entry author}{fg=BrandInk}
+\setbeamercolor{bibliography entry title} {fg=BrandInk}
+\setbeamercolor{bibliography entry note}  {fg=BrandMuted}
+\setbeamercolor{footnote}{fg=BrandMuted}
+
+% --- Table of contents ------------------------------------------------------
+\setbeamercolor{section in toc}   {fg=BrandInk}
+\setbeamercolor{subsection in toc}{fg=BrandMuted}
+
+\mode<all>
+\endinput

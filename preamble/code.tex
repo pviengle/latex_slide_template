@@ -1,0 +1,68 @@
+% ============================================================================
+%  preamble/code.tex  --  syntax-highlighted code on slides
+% ----------------------------------------------------------------------------
+%  Uses `listings`, which is pure LaTeX: no Python, no --shell-escape, works
+%  on Overleaf and on a fresh machine with nothing installed.
+%
+%  IMPORTANT: any frame containing code must be marked fragile:
+%      \begin{frame}[fragile]{Title}
+%        \begin{lstlisting}[language=Python]
+%        ...
+%        \end{lstlisting}
+%      \end{frame}
+%  Without [fragile] LaTeX will fail with a confusing error. This is a beamer
+%  quirk, not a bug in this template.
+% ============================================================================
+
+\usepackage{listings}
+
+% Colours are taken from the theme palette so code matches the slide design.
+\lstdefinestyle{deck}{
+  basicstyle       = \ttfamily\scriptsize\color{BrandInk},
+  keywordstyle     = \color{BrandPrimary}\bfseries,
+  commentstyle     = \color{BrandMuted}\itshape,
+  stringstyle      = \color{BrandAccent},
+  numberstyle      = \ttfamily\tiny\color{BrandMuted},
+  identifierstyle  = \color{BrandInk},
+  backgroundcolor  = \color{BrandWash},
+  %
+  numbers          = left,
+  numbersep        = 9pt,
+  stepnumber       = 1,
+  %
+  %  No frame rule. `frame=leftline` puts a rule per line, which fragments
+  %  visually once line numbers sit beside it. The background wash already
+  %  separates code from prose, which is all a slide needs.
+  frame            = none,
+  xleftmargin      = 22pt,
+  xrightmargin     = 4pt,
+  framexleftmargin = 22pt,
+  %
+  breaklines       = true,
+  breakatwhitespace= true,
+  breakindent      = 1.5em,
+  breakautoindent  = true,
+  %
+  %  NOTE: `postbreak` (the little arrow marking a wrapped line) is
+  %  deliberately NOT set. It clashes with the way listings kerns lines
+  %  inside a beamer [fragile] frame and produces a flood of
+  %  "Missing number, treated as zero" errors. Line breaking itself works
+  %  fine without it.
+  %
+  showstringspaces = false,
+  tabsize          = 2,
+  columns          = flexible,
+  keepspaces       = true,
+  upquote          = true,
+  aboveskip        = 1em,
+  belowskip        = 0.6em,
+}
+
+\lstset{style=deck}
+
+% ---------------------------------------------------------------------------
+%  Inline code: \code{foo()} -- reads better than \texttt{} on slides
+% ---------------------------------------------------------------------------
+\newcommand{\code}[1]{%
+  \colorbox{BrandWash}{\ttfamily\small\color{BrandPrimary}#1}%
+}

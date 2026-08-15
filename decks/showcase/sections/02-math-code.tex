@@ -1,0 +1,40 @@
+\section{Maths and Code}
+
+\begin{frame}{Mathematics}
+  An inline expression such as $f(x) = \alpha x + \beta$, and a display:
+  \begin{equation}
+    \hat{\theta} = \argmin_{\theta \in \Theta}
+      \frac{1}{n}\sum_{i=1}^{n} \norm{y_i - f(x_i; \theta)}^2 .
+  \end{equation}
+
+  \begin{block}{Shorthands from \texttt{math.tex}}
+    $\R$, $\N$, $\Z$, $\E[X]$, $\Prob(A)$, $\abs{x}$, $\norm{v}$,
+    $\argmax_\theta$
+  \end{block}
+\end{frame}
+
+\begin{frame}{Theorem environments}
+  \begin{theorem}
+    For every $\varepsilon > 0$ there exists $N$ such that
+    $\abs{a_n - L} < \varepsilon$ for all $n > N$.
+  \end{theorem}
+
+  \begin{proof}
+    Immediate from the definition of convergence.
+  \end{proof}
+\end{frame}
+
+% NOTE the [fragile] option -- required on any frame containing code.
+\begin{frame}[fragile]{Code listings}
+\begin{lstlisting}[language=Python]
+def fit(model, data, epochs=10):
+    """Train the model and return its history."""
+    history = []
+    for epoch in range(epochs):
+        loss = model.step(data)     # one pass
+        history.append(loss)
+    return history
+\end{lstlisting}
+
+  Inline code looks like \code{model.step(data)}.
+\end{frame}

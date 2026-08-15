@@ -1,0 +1,148 @@
+% ============================================================================
+%  beamerinnerthemedeck.sty  --  everything INSIDE the slide
+% ----------------------------------------------------------------------------
+%  Title page layout, section divider slides, blocks, bullet markers.
+% ============================================================================
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{beamerinnerthemedeck}[2026/08/15 v1.0 Beamer inner]
+
+\mode<presentation>
+\RequirePackage{tikz}
+
+% ---------------------------------------------------------------------------
+%  Optional logo. Set it in your deck with:
+%      \decklogo{\includegraphics[height=8mm]{path/to/logo.pdf}}
+%  If never set, nothing is drawn and no space is reserved.
+% ---------------------------------------------------------------------------
+\newcommand{\decklogocontent}{}
+\newcommand{\decklogo}[1]{\renewcommand{\decklogocontent}{#1}}
+
+% ---------------------------------------------------------------------------
+%  TITLE PAGE
+% ---------------------------------------------------------------------------
+\defbeamertemplate*{title page}{deck}[1][]{%
+  \vfill
+  \begingroup
+    \raggedright
+    % Accent rule above the title
+    {\color{BrandAccent}\rule{18mm}{2.4pt}}\par
+    \vspace{4mm}
+    {\usebeamerfont{title}\usebeamercolor[fg]{title}\inserttitle\par}
+    \ifx\insertsubtitle\empty\else
+      \vspace{1.5mm}
+      {\usebeamerfont{subtitle}\usebeamercolor[fg]{subtitle}\insertsubtitle\par}
+    \fi
+    \vspace{7mm}
+    {\usebeamerfont{author}\usebeamercolor[fg]{author}\insertauthor\par}
+    \ifx\insertinstitute\empty\else
+      \vspace{1mm}
+      {\usebeamerfont{institute}\usebeamercolor[fg]{institute}\insertinstitute\par}
+    \fi
+    \vspace{4mm}
+    {\usebeamerfont{date}\usebeamercolor[fg]{date}\insertdate\par}
+    \ifx\decklogocontent\empty\else
+      \vspace{6mm}{\decklogocontent\par}
+    \fi
+  \endgroup
+  \vfill
+}
+
+% ---------------------------------------------------------------------------
+%  SECTION DIVIDER
+%  Auto-inserted before each \section -- see the hook at the bottom.
+% ---------------------------------------------------------------------------
+\defbeamertemplate*{section page}{deck}[1][]{%
+  \vfill
+  \begingroup
+    \raggedright
+    {\usebeamercolor[bg]{section number}%
+     \begin{tikzpicture}
+       \node[fill=BrandAccent, text=BrandPaper, rounded corners=1.2pt,
+             inner sep=4pt, minimum width=9mm, align=center]
+            {\usebeamerfont{section number}\insertsectionnumber};
+     \end{tikzpicture}}\par
+    \vspace{3mm}
+    {\usebeamerfont{section title}\usebeamercolor[fg]{section title}%
+     \insertsectionhead\par}
+    \vspace{2mm}
+    {\color{BrandRule}\rule{\textwidth}{0.6pt}}
+  \endgroup
+  \vfill
+}
+
+% ---------------------------------------------------------------------------
+%  BLOCKS  --  flat, with a coloured title strip and a tinted body
+% ---------------------------------------------------------------------------
+\setbeamertemplate{block begin}{%
+  \setlength{\parskip}{0pt}
+  \begin{beamercolorbox}[colsep*=0ex, leftskip=1.4ex, rightskip=1.4ex,
+                         dp=0.7ex, ht=2.4ex]{block title}
+    \usebeamerfont{block title}\insertblocktitle
+  \end{beamercolorbox}
+  \nointerlineskip
+  \begin{beamercolorbox}[colsep*=0ex, leftskip=1.4ex, rightskip=1.4ex,
+                         dp=1.2ex, vmode]{block body}
+    \vspace{0.6ex}
+}
+\setbeamertemplate{block end}{\end{beamercolorbox}\vspace{1ex}}
+
+\setbeamertemplate{block example begin}{%
+  \setlength{\parskip}{0pt}
+  \begin{beamercolorbox}[colsep*=0ex, leftskip=1.4ex, rightskip=1.4ex,
+                         dp=0.7ex, ht=2.4ex]{block title example}
+    \usebeamerfont{block title}\insertblocktitle
+  \end{beamercolorbox}
+  \nointerlineskip
+  \begin{beamercolorbox}[colsep*=0ex, leftskip=1.4ex, rightskip=1.4ex,
+                         dp=1.2ex, vmode]{block body example}
+    \vspace{0.6ex}
+}
+\setbeamertemplate{block example end}{\end{beamercolorbox}\vspace{1ex}}
+
+\setbeamertemplate{block alerted begin}{%
+  \setlength{\parskip}{0pt}
+  \begin{beamercolorbox}[colsep*=0ex, leftskip=1.4ex, rightskip=1.4ex,
+                         dp=0.7ex, ht=2.4ex]{block title alerted}
+    \usebeamerfont{block title}\insertblocktitle
+  \end{beamercolorbox}
+  \nointerlineskip
+  \begin{beamercolorbox}[colsep*=0ex, leftskip=1.4ex, rightskip=1.4ex,
+                         dp=1.2ex, vmode]{block body alerted}
+    \vspace{0.6ex}
+}
+\setbeamertemplate{block alerted end}{\end{beamercolorbox}\vspace{1ex}}
+
+% ---------------------------------------------------------------------------
+%  LIST MARKERS  --  small squares rather than beamer's default triangles
+% ---------------------------------------------------------------------------
+\setbeamertemplate{itemize item}      {\raisebox{0.15ex}{\rule{1.1ex}{1.1ex}}}
+\setbeamertemplate{itemize subitem}   {\raisebox{0.2ex}{\rule{0.85ex}{0.85ex}}}
+\setbeamertemplate{itemize subsubitem}{\raisebox{0.25ex}{\rule{0.6ex}{0.6ex}}}
+\setbeamertemplate{enumerate item}    {\insertenumlabel.}
+\setbeamertemplate{enumerate subitem} {\insertenumlabel.\insertsubenumlabel}
+
+% Slightly roomier lists than beamer's default -- slides need the air.
+\setlength{\leftmargini}{1.6em}
+\setlength{\leftmarginii}{1.4em}
+
+% ---------------------------------------------------------------------------
+%  TABLE OF CONTENTS
+% ---------------------------------------------------------------------------
+\setbeamertemplate{section in toc}{%
+  \leavevmode\leftskip=0pt%
+  {\color{BrandAccent}\rule[0.25ex]{0.9ex}{0.9ex}}~\inserttocsection\par%
+}
+\setbeamertemplate{subsection in toc}{%
+  \leavevmode\leftskip=2.2em%
+  \inserttocsubsection\par%
+}
+
+% ---------------------------------------------------------------------------
+%  CAPTIONS  --  "Figure 1: ..." without beamer's default centring
+% ---------------------------------------------------------------------------
+\setbeamertemplate{caption}[numbered]
+\setbeamertemplate{caption label separator}{: }
+
+\mode<all>
+\endinput

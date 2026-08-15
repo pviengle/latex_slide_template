@@ -1,0 +1,40 @@
+# ---- Build output -----------------------------------------------------------
+build/
+decks/*/out/                 # per-deck latexmk intermediates
+*.pdf
+!theme/assets/*.pdf          # keep the logo, it is a source asset
+
+# ---- LaTeX intermediates ----------------------------------------------------
+*.aux
+*.log
+*.out
+*.toc
+*.nav
+*.snm
+*.vrb
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.synctex(busy)
+*.xdv
+*.dvi
+
+# ---- Bibliography (biblatex + biber) ---------------------------------------
+*.bbl
+*.blg
+*.bcf
+*.run.xml
+*.bib.bak
+
+# ---- listings / minted / misc ----------------------------------------------
+*.lol
+*.lof
+*.lot
+_minted*/
+*.pyg
+
+# ---- Editor / OS ------------------------------------------------------------
+.DS_Store
+Thumbs.db
+*.swp
+*~

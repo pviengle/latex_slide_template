@@ -1,0 +1,156 @@
+% ============================================================================
+%  preamble/lang-thai.tex  --  Thai language support
+% ----------------------------------------------------------------------------
+%  Load this ONLY in decks that contain Thai. English-only decks should leave
+%  it out -- it costs compile time and pulls in extra packages.
+%
+%  Load it AFTER preamble/base.tex.
+%
+%  ---------------------------------------------------------------------------
+%  WHY THIS FILE HAS TWO BRANCHES
+%  ---------------------------------------------------------------------------
+%  Sarabun (the Google Fonts release of TH Sarabun New, the Thai government
+%  standard font) exists only as a .ttf file. pdfLaTeX cannot read .ttf files
+%  at all, so:
+%
+%    XeLaTeX / LuaLaTeX  ->  real Sarabun, from theme/assets/fonts/
+%    pdfLaTeX            ->  falls back to Garuda, a Thai font that ships
+%                            with TeX Live in the older Type1 format
+%
+%  The fallback still produces correct, readable Thai -- it is simply not
+%  Sarabun. A warning is printed so the substitution is never silent.
+%
+%  To get real Sarabun, build with XeLaTeX. The deck's .latexmkrc does this
+%  for you if you created it with:  scripts/new-deck.ps1 -Name talk -Thai
+% ============================================================================
+
+\ifPDFTeX
+  % =========================================================================
+  %  pdfLaTeX branch -- Garuda fallback
+  % =========================================================================
+  \GenericWarning{}{%
+    ^^J**********************************************************^^J%
+    * lang-thai: building with pdfLaTeX.                      *^^J%
+    * Thai will render in GARUDA, not Sarabun.                *^^J%
+    * Sarabun is a .ttf font and pdfLaTeX cannot read .ttf.   *^^J%
+    * Build with XeLaTeX to get real Sarabun.                 *^^J%
+    **********************************************************^^J%
+  }
+
+  % ------------------------------------------------------------------------
+  %  NOTE: babel's `thai` option is deliberately NOT used here.
+  %
+  %  babel-thai predates UTF-8. Loading it sets bytes 0xA1-0xFB to catcode 11
+  %  so that TIS-620 (an 8-bit Thai encoding from the 1990s) can be typed
+  %  directly. That switches OFF LaTeX's UTF-8 decoder, and a modern UTF-8
+  %  source file then fails with "Invalid UTF-8 byte" on every Thai word.
+  %
+  %  So we take only the two pieces we actually need -- the LTH font encoding
+  %  and a Thai font -- and supply the UTF-8 mapping ourselves. UTF-8 stays
+  %  intact and Thai renders correctly.
+  %
+  %  What is given up: babel's Thai word-break and hyphenation logic. On
+  %  slides, where Thai runs are short, this is not usually noticeable.
+  % ------------------------------------------------------------------------
+  \usepackage[LTH,T1]{fontenc}
+  \usepackage[garuda]{fonts-tlwg}
+
+  % Maps Thai Unicode codepoints onto their LTH font slots.
+  \input{thai-utf8-pdftex.def}
+
+  % Thai has no spaces between words, so give TeX some slack on line breaks.
+  \sloppy
+
+  % --- The shared API, pdfLaTeX implementation ----------------------------
+  %  \thaitext is fonts-tlwg's switch to the Thai font + LTH encoding.
+  \newenvironment{thaipar}{\par\begingroup\thaitext}{\par\endgroup}
+  \newcommand{\thaiinline}[1]{{\thaitext #1}}
+
+\else
+  % =========================================================================
+  %  XeLaTeX / LuaLaTeX branch -- real Sarabun
+  % =========================================================================
+  \usepackage{polyglossia}
+  \setmainlanguage{english}
+  \setotherlanguage{thai}
+
+  % ------------------------------------------------------------------------
+  %  Sarabun is loaded BY FILE PATH, not by system font name. That means the
+  %  font does not need to be installed on the machine -- it travels with the
+  %  repo, so a fresh clone and Overleaf both work.
+  %
+  %  The path is relative to the deck folder (decks/<name>/), which is two
+  %  levels below the repo root.
+  %
+  %  Scale=MatchLowercase: Sarabun's letters are large for their point size
+  %  next to Latin text. This scales it so Thai and English on the same line
+  %  look the same size instead of the Thai towering over the English.
+  % ------------------------------------------------------------------------
+  \newfontfamily\thaifont[
+    Path           = ../../theme/assets/fonts/,
+    Extension      = .ttf,
+    UprightFont    = Sarabun-Regular,
+    ItalicFont     = Sarabun-Italic,
+    BoldFont       = Sarabun-Bold,
+    BoldItalicFont = Sarabun-BoldItalic,
+    Script         = Thai,
+    Scale          = MatchLowercase,
+  ]{Sarabun}
+
+  % Same font for the sans-serif Thai slot, so \textsf inside Thai works.
+  \newfontfamily\thaifontsf[
+    Path           = ../../theme/assets/fonts/,
+    Extension      = .ttf,
+    UprightFont    = Sarabun-Regular,
+    ItalicFont     = Sarabun-Italic,
+    BoldFont       = Sarabun-Bold,
+    BoldItalicFont = Sarabun-BoldItalic,
+    Script         = Thai,
+    Scale          = MatchLowercase,
+  ]{Sarabun}
+
+  % --- The shared API, polyglossia spelling -------------------------------
+  \newenvironment{thaipar}%
+    {\begin{thai}}%
+    {\end{thai}}
+  \newcommand{\thaiinline}[1]{\textthai{#1}}
+\fi
+
+% ===========================================================================
+%  USAGE  --  identical on every engine
+% ---------------------------------------------------------------------------
+%  A short run of Thai inside an English sentence:
+%      The word \thaiinline{ตัวอย่าง} means "example".
+%
+%  A whole paragraph or block of Thai:
+%      \begin{thaipar}
+%        สวัสดีครับ ...
+%      \end{thaipar}
+%
+%  ---------------------------------------------------------------------------
+%  WHY NOT \begin{thai} AND \textthai DIRECTLY?
+%  ---------------------------------------------------------------------------
+%  Because the two systems spell things differently, and one of the spellings
+%  is a trap:
+%
+%    polyglossia (XeLaTeX)  defines a `thai` ENVIRONMENT  -> \begin{thai} works
+%    babel       (pdfLaTeX) defines \thai as a language-SWITCH COMMAND, with
+%                           no matching \endthai -> \begin{thai} fails with a
+%                           confusing "Missing \endcsname" error
+%
+%  \thaipar and \thaiinline are defined above in both branches to mean the
+%  right thing, so your slides never have to know which engine is running.
+%
+%  ---------------------------------------------------------------------------
+%  THAI IN FRAME TITLES -- READ THIS ONE
+%  ---------------------------------------------------------------------------
+%  Headings are set in Fira Sans, which contains no Thai glyphs, and neither
+%  XeLaTeX nor pdfLaTeX falls back to another font automatically. Thai typed
+%  straight into a frame title therefore comes out as empty boxes.
+%
+%  So wrap it:
+%      \begin{frame}{Results / \thaiinline{ผลลัพธ์}}     % correct
+%      \begin{frame}{Results / ผลลัพธ์}                   % empty boxes
+%
+%  The same applies to \title, \section and any other heading.
+% ===========================================================================

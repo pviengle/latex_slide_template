@@ -1,0 +1,42 @@
+% ============================================================================
+%  beamerthemedeck.sty  --  master theme file
+% ----------------------------------------------------------------------------
+%  Loaded by:   \usetheme{deck}
+%  which LaTeX expands to:  \usepackage{beamerthemedeck}
+%
+%  This master file does nothing itself except load the four parts a beamer
+%  theme is made of:
+%      color  -- the palette
+%      font   -- typefaces and sizes
+%      inner  -- what is INSIDE the slide (title page, blocks, bullets)
+%      outer  -- what is AROUND the edge (title bar, footer, page numbers)
+%
+%  To change how slides look, edit those files -- not this one.
+% ============================================================================
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{beamerthemedeck}[2026/08/15 v1.0 Beamer beamer theme]
+
+% ---------------------------------------------------------------------------
+%  \themepath lets this theme be found in two different ways:
+%
+%    1. Normal builds: latexmk puts theme/ on TEXINPUTS, so \themepath is
+%       empty and LaTeX finds the sub-files on its own.
+%    2. Overleaf / no-latexmk builds: main.tex defines
+%       \def\themepath{../../theme/} BEFORE \usetheme, and the sub-files are
+%       then found by relative path.
+%
+%  \providecommand only defines it if it is not already defined, so option 2
+%  wins when present and option 1 is the default.
+% ---------------------------------------------------------------------------
+\providecommand{\themepath}{}
+
+\mode<presentation>
+
+\usecolortheme{\themepath deck}
+\usefonttheme{\themepath deck}
+\useinnertheme{\themepath deck}
+\useoutertheme{\themepath deck}
+
+\mode<all>
+\endinput

@@ -1,0 +1,128 @@
+% ============================================================================
+%  thai-utf8-pdftex.def  --  read UTF-8 Thai under pdfLaTeX
+% ----------------------------------------------------------------------------
+%  GENERATED FILE -- mechanical, but safe to read.
+%
+%  The problem this solves:
+%    The Thai support in TeX Live (babel-thai / fonts-tlwg) is built around
+%    TIS-620, an 8-bit Thai encoding from the 1990s, and ships no UTF-8
+%    mapping. pdfLaTeX reading a modern UTF-8 .tex file therefore stops with
+%    "Invalid UTF-8 byte" on every Thai word.
+%
+%  The fix:
+%    TIS-620 and Unicode agree on the order of Thai characters and differ by
+%    a constant offset:
+%
+%        TIS-620 byte  =  Unicode codepoint  -  0x0E00  +  0xA0
+%
+%    So each Thai codepoint maps to its LTH font slot with one
+%    \DeclareUnicodeCharacter line. That is what follows.
+%
+%  Two details that matter:
+%
+%    \thaislot is declared ROBUST. Thai characters often appear in frame
+%    titles and section names, which LaTeX copies into the .toc/.nav files.
+%    A fragile command breaks there with "Argument of \@secondoffive has an
+%    extra }".
+%
+%    It expands to a bare \char, not to a wrapped box or a per-character font
+%    switch. \char still takes part in TeX ligature and kerning, which is how
+%    the LTH fonts stack Thai upper vowels and tone marks. Wrapping each
+%    character individually would break that positioning.
+%
+%  Only loaded by preamble/lang-thai.tex, and only under pdfLaTeX.
+% ============================================================================
+
+\DeclareRobustCommand{\thaislot}[1]{\char#1\relax}
+
+% --- Consonants, vowels and tone marks: U+0E01-U+0E3A ---------------------
+\DeclareUnicodeCharacter{0E01}{\thaislot{161}}
+\DeclareUnicodeCharacter{0E02}{\thaislot{162}}
+\DeclareUnicodeCharacter{0E03}{\thaislot{163}}
+\DeclareUnicodeCharacter{0E04}{\thaislot{164}}
+\DeclareUnicodeCharacter{0E05}{\thaislot{165}}
+\DeclareUnicodeCharacter{0E06}{\thaislot{166}}
+\DeclareUnicodeCharacter{0E07}{\thaislot{167}}
+\DeclareUnicodeCharacter{0E08}{\thaislot{168}}
+\DeclareUnicodeCharacter{0E09}{\thaislot{169}}
+\DeclareUnicodeCharacter{0E0A}{\thaislot{170}}
+\DeclareUnicodeCharacter{0E0B}{\thaislot{171}}
+\DeclareUnicodeCharacter{0E0C}{\thaislot{172}}
+\DeclareUnicodeCharacter{0E0D}{\thaislot{173}}
+\DeclareUnicodeCharacter{0E0E}{\thaislot{174}}
+\DeclareUnicodeCharacter{0E0F}{\thaislot{175}}
+\DeclareUnicodeCharacter{0E10}{\thaislot{176}}
+\DeclareUnicodeCharacter{0E11}{\thaislot{177}}
+\DeclareUnicodeCharacter{0E12}{\thaislot{178}}
+\DeclareUnicodeCharacter{0E13}{\thaislot{179}}
+\DeclareUnicodeCharacter{0E14}{\thaislot{180}}
+\DeclareUnicodeCharacter{0E15}{\thaislot{181}}
+\DeclareUnicodeCharacter{0E16}{\thaislot{182}}
+\DeclareUnicodeCharacter{0E17}{\thaislot{183}}
+\DeclareUnicodeCharacter{0E18}{\thaislot{184}}
+\DeclareUnicodeCharacter{0E19}{\thaislot{185}}
+\DeclareUnicodeCharacter{0E1A}{\thaislot{186}}
+\DeclareUnicodeCharacter{0E1B}{\thaislot{187}}
+\DeclareUnicodeCharacter{0E1C}{\thaislot{188}}
+\DeclareUnicodeCharacter{0E1D}{\thaislot{189}}
+\DeclareUnicodeCharacter{0E1E}{\thaislot{190}}
+\DeclareUnicodeCharacter{0E1F}{\thaislot{191}}
+\DeclareUnicodeCharacter{0E20}{\thaislot{192}}
+\DeclareUnicodeCharacter{0E21}{\thaislot{193}}
+\DeclareUnicodeCharacter{0E22}{\thaislot{194}}
+\DeclareUnicodeCharacter{0E23}{\thaislot{195}}
+\DeclareUnicodeCharacter{0E24}{\thaislot{196}}
+\DeclareUnicodeCharacter{0E25}{\thaislot{197}}
+\DeclareUnicodeCharacter{0E26}{\thaislot{198}}
+\DeclareUnicodeCharacter{0E27}{\thaislot{199}}
+\DeclareUnicodeCharacter{0E28}{\thaislot{200}}
+\DeclareUnicodeCharacter{0E29}{\thaislot{201}}
+\DeclareUnicodeCharacter{0E2A}{\thaislot{202}}
+\DeclareUnicodeCharacter{0E2B}{\thaislot{203}}
+\DeclareUnicodeCharacter{0E2C}{\thaislot{204}}
+\DeclareUnicodeCharacter{0E2D}{\thaislot{205}}
+\DeclareUnicodeCharacter{0E2E}{\thaislot{206}}
+\DeclareUnicodeCharacter{0E2F}{\thaislot{207}}
+\DeclareUnicodeCharacter{0E30}{\thaislot{208}}
+\DeclareUnicodeCharacter{0E31}{\thaislot{209}}
+\DeclareUnicodeCharacter{0E32}{\thaislot{210}}
+\DeclareUnicodeCharacter{0E33}{\thaislot{211}}
+\DeclareUnicodeCharacter{0E34}{\thaislot{212}}
+\DeclareUnicodeCharacter{0E35}{\thaislot{213}}
+\DeclareUnicodeCharacter{0E36}{\thaislot{214}}
+\DeclareUnicodeCharacter{0E37}{\thaislot{215}}
+\DeclareUnicodeCharacter{0E38}{\thaislot{216}}
+\DeclareUnicodeCharacter{0E39}{\thaislot{217}}
+\DeclareUnicodeCharacter{0E3A}{\thaislot{218}}
+
+% --- Baht sign, remaining vowels, digits: U+0E3F-U+0E5B -------------------
+%     (U+0E3B-U+0E3E are unassigned in Unicode, and have no TIS-620 byte)
+\DeclareUnicodeCharacter{0E3F}{\thaislot{223}}
+\DeclareUnicodeCharacter{0E40}{\thaislot{224}}
+\DeclareUnicodeCharacter{0E41}{\thaislot{225}}
+\DeclareUnicodeCharacter{0E42}{\thaislot{226}}
+\DeclareUnicodeCharacter{0E43}{\thaislot{227}}
+\DeclareUnicodeCharacter{0E44}{\thaislot{228}}
+\DeclareUnicodeCharacter{0E45}{\thaislot{229}}
+\DeclareUnicodeCharacter{0E46}{\thaislot{230}}
+\DeclareUnicodeCharacter{0E47}{\thaislot{231}}
+\DeclareUnicodeCharacter{0E48}{\thaislot{232}}
+\DeclareUnicodeCharacter{0E49}{\thaislot{233}}
+\DeclareUnicodeCharacter{0E4A}{\thaislot{234}}
+\DeclareUnicodeCharacter{0E4B}{\thaislot{235}}
+\DeclareUnicodeCharacter{0E4C}{\thaislot{236}}
+\DeclareUnicodeCharacter{0E4D}{\thaislot{237}}
+\DeclareUnicodeCharacter{0E4E}{\thaislot{238}}
+\DeclareUnicodeCharacter{0E4F}{\thaislot{239}}
+\DeclareUnicodeCharacter{0E50}{\thaislot{240}}
+\DeclareUnicodeCharacter{0E51}{\thaislot{241}}
+\DeclareUnicodeCharacter{0E52}{\thaislot{242}}
+\DeclareUnicodeCharacter{0E53}{\thaislot{243}}
+\DeclareUnicodeCharacter{0E54}{\thaislot{244}}
+\DeclareUnicodeCharacter{0E55}{\thaislot{245}}
+\DeclareUnicodeCharacter{0E56}{\thaislot{246}}
+\DeclareUnicodeCharacter{0E57}{\thaislot{247}}
+\DeclareUnicodeCharacter{0E58}{\thaislot{248}}
+\DeclareUnicodeCharacter{0E59}{\thaislot{249}}
+\DeclareUnicodeCharacter{0E5A}{\thaislot{250}}
+\DeclareUnicodeCharacter{0E5B}{\thaislot{251}}

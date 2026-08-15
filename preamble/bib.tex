@@ -1,0 +1,45 @@
+% ============================================================================
+%  preamble/bib.tex  --  citations and reference list
+% ----------------------------------------------------------------------------
+%  Uses biblatex with the biber backend (the modern combination; biber
+%  handles UTF-8 names correctly, which old bibtex does not).
+%
+%  In your deck:
+%      \addbibresource{refs.bib}      % after loading this file
+%      \parencite{key}                % (Author, 2024)
+%      \textcite{key}                 % Author (2024)
+%      \footfullcite{key}             % full reference in a footnote
+%      \printbibliography             % on the references slide
+% ============================================================================
+
+\usepackage[
+  backend      = biber,
+  style        = authoryear,
+  maxcitenames = 2,      % "Smith et al." rather than a long list on a slide
+  maxbibnames  = 6,
+  giveninits   = true,
+  uniquename   = init,
+  doi          = false,  % slides rarely need these; they eat space
+  isbn         = false,
+  url          = false,
+  eprint       = false,
+]{biblatex}
+
+% ---------------------------------------------------------------------------
+%  Slide-sized bibliography
+% ---------------------------------------------------------------------------
+\setbeamertemplate{bibliography item}{}   % drop the generic article icon
+\renewcommand*{\bibfont}{\scriptsize}
+
+% Keep entries from being hyphenated into a mess in a narrow column
+\appto{\bibsetup}{\raggedright}
+
+% ---------------------------------------------------------------------------
+%  A references slide that splits across pages automatically if it is long.
+%  Use \bibliographyframe in your deck instead of writing this out by hand.
+% ---------------------------------------------------------------------------
+\newcommand{\bibliographyframe}[1][References]{%
+  \begin{frame}[allowframebreaks]{#1}
+    \printbibliography[heading=none]
+  \end{frame}%
+}

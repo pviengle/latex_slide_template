@@ -1,0 +1,64 @@
+% ============================================================================
+%  preamble/figures.tex  --  diagrams and charts drawn in LaTeX
+% ----------------------------------------------------------------------------
+%  TikZ draws diagrams; pgfplots draws charts. Both render with the same
+%  fonts as the slide text, which is why they look better than a pasted PNG.
+% ============================================================================
+
+\usepackage{tikz}
+\usepackage{pgfplots}
+
+\pgfplotsset{compat=1.18}
+
+% --- TikZ libraries used often on slides -----------------------------------
+\usetikzlibrary{
+  arrows.meta,     % nicer arrow heads: -{Stealth}
+  positioning,     % right=of node
+  shapes.geometric,
+  fit,
+  backgrounds,
+  calc,
+}
+
+% ---------------------------------------------------------------------------
+%  Default chart style, matched to the theme palette
+% ---------------------------------------------------------------------------
+\pgfplotsset{
+  deck/.style={
+    width           = 0.8\textwidth,
+    height          = 0.5\textheight,
+    tick align      = outside,
+    tick pos        = left,
+    axis line style = {BrandMuted},
+    every axis label/.append style = {BrandInk},
+    tick label style = {font=\scriptsize, color=BrandMuted},
+    label style      = {font=\small},
+    title style      = {font=\small\bfseries, color=BrandPrimary},
+    legend style     = {font=\scriptsize, draw=BrandRule, fill=BrandPaper},
+    grid             = major,
+    grid style       = {BrandRule, very thin},
+    cycle list       = {
+      {BrandPrimary, mark=*,        mark size=1.6pt, thick},
+      {BrandAccent,  mark=square*,  mark size=1.6pt, thick},
+      {BrandAlert,   mark=triangle*,mark size=2.0pt, thick},
+      {BrandMuted,   mark=diamond*, mark size=1.8pt, thick},
+    },
+  },
+}
+
+% ---------------------------------------------------------------------------
+%  Default node styles for diagrams
+% ---------------------------------------------------------------------------
+\tikzset{
+  deckbox/.style={
+    draw=BrandPrimary, fill=BrandPrimaryLight, rounded corners=2pt,
+    inner sep=6pt, align=center, font=\small,
+  },
+  deckaccentbox/.style={
+    draw=BrandAccent, fill=BrandAccentLight, rounded corners=2pt,
+    inner sep=6pt, align=center, font=\small,
+  },
+  deckarrow/.style={
+    -{Stealth[length=5pt]}, draw=BrandMuted, thick,
+  },
+}

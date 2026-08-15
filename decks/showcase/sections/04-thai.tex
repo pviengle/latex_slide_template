@@ -1,0 +1,38 @@
+\section{Thai}
+
+% NOTE the \thaiinline{} around the Thai part of the frame title.
+% Headings are set in Fira Sans, which has no Thai glyphs, so unwrapped Thai
+% in a title comes out as empty boxes. See preamble/lang-thai.tex.
+\begin{frame}{Thai text / \thaiinline{ข้อความภาษาไทย}}
+  \begin{block}{Which font are you seeing?}
+    Built with \textbf{XeLaTeX} or \textbf{LuaLaTeX}, the Thai below is
+    \hl{Sarabun} (TH Sarabun New).\\
+    Built with \textbf{pdfLaTeX}, it falls back to \hl{Garuda}.
+  \end{block}
+
+  \begin{thaipar}
+    สวัสดีครับ นี่คือตัวอย่างข้อความภาษาไทยบนสไลด์
+    เพื่อทดสอบว่าฟอนต์แสดงผลถูกต้องหรือไม่
+  \end{thaipar}
+
+  \vspace{0.6em}
+  Mixed in a sentence: the Thai word \thaiinline{ตัวอย่าง} means ``example''.
+\end{frame}
+
+\begin{frame}{Thai list / \thaiinline{รายการภาษาไทย}}
+  \begin{itemize}
+    \item \thaiinline{ข้อแรก} --- first item
+    \item \thaiinline{ข้อที่สอง} --- second item
+    \item \thaiinline{ข้อที่สาม} --- third item
+  \end{itemize}
+
+  \vspace{0.6em}
+  \begin{thaipar}
+    การจัดวางตัวอักษรไทยต้องรองรับสระบนและวรรณยุกต์
+    เช่น ที่ ปี้ กื๊อ ให้แสดงผลได้ถูกต้อง
+  \end{thaipar}
+
+  \vspace{0.4em}
+  {\scriptsize\color{BrandMuted}The line above deliberately stacks vowel and
+  tone marks --- a good check that the font is rendering properly.}
+\end{frame}

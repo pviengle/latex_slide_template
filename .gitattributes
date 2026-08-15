@@ -1,0 +1,30 @@
+# ============================================================================
+#  Keep the repo usable on Windows, macOS and Linux at the same time.
+# ============================================================================
+
+# Normalise line endings in text files to LF inside the repository.
+* text=auto eol=lf
+
+# Shell scripts MUST stay LF even when checked out on Windows -- CRLF here
+# makes bash fail with "bad interpreter: /usr/bin/env bash^M" on macOS/Linux.
+*.sh        text eol=lf
+
+# PowerShell is happiest with CRLF on Windows.
+*.ps1       text eol=crlf
+
+# Perl config read by latexmk on every platform.
+*.pl        text eol=lf
+.latexmkrc  text eol=lf
+
+# LaTeX sources
+*.tex       text eol=lf
+*.sty       text eol=lf
+*.def       text eol=lf
+*.bib       text eol=lf
+
+# ---- Binary: never touch these ---------------------------------------------
+*.ttf       binary
+*.otf       binary
+*.pdf       binary
+*.png       binary
+*.jpg       binary

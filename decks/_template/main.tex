@@ -1,0 +1,61 @@
+% ============================================================================
+%  main.tex  --  the deck
+% ----------------------------------------------------------------------------
+%  Build it:   from this folder, run   latexmk
+%              or from the repo root:  .\scripts\build.ps1 -Deck <foldername>
+% ============================================================================
+
+\documentclass[dvipsnames,10pt,aspectratio=169]{beamer}
+%                |         |     |
+%                |         |     +-- 16:9 widescreen (use 43 for old 4:3)
+%                |         +-------- base font size
+%                +------------------ unlocks 68 extra colour names
+%                                    (RoyalBlue, BrickRed, ForestGreen, ...)
+
+% --- Theme -----------------------------------------------------------------
+\usetheme{deck}
+% Options:  \usetheme[noprogressbar]{deck}
+%           \usetheme[nofooter]{deck}
+
+% --- Shared setup ----------------------------------------------------------
+\input{base}      % always
+\input{math}      % equations          -- delete if unused
+\input{code}      % code listings      -- delete if unused
+\input{figures}   % TikZ / pgfplots    -- delete if unused
+\input{macros}    % your own shortcuts
+
+% --- Thai ------------------------------------------------------------------
+%  Uncomment BOTH the line below and the xelatex line in .latexmkrc.
+% \input{lang-thai}
+
+% --- Bibliography ----------------------------------------------------------
+%  Uncomment if this deck cites anything.
+% \input{bib}
+% \addbibresource{refs.bib}
+
+% --- Who / what / when -----------------------------------------------------
+\input{metadata}
+
+% ============================================================================
+\begin{document}
+
+\begin{frame}[plain]
+  \titlepage
+\end{frame}
+
+\begin{frame}{Outline}
+  \tableofcontents
+\end{frame}
+
+\input{sections/01-intro}
+\input{sections/02-method}
+
+% --- References ------------------------------------------------------------
+% \bibliographyframe
+
+% --- Appendix --------------------------------------------------------------
+%  Slides after \appendix are not counted in the "N / total" footer.
+\appendix
+\input{sections/99-appendix}
+
+\end{document}

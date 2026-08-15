@@ -1,0 +1,55 @@
+% ============================================================================
+%  beamerfontthemedeck.sty  --  typography
+% ----------------------------------------------------------------------------
+%  This file sets SIZES and WEIGHTS only.
+%
+%  It deliberately does NOT choose the actual typeface. Which font file gets
+%  used depends on the engine (pdfLaTeX vs XeLaTeX/LuaLaTeX) and that decision
+%  lives in preamble/engine.tex. Keeping the two apart means the theme works
+%  under all three engines without edits.
+% ============================================================================
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{beamerfontthemedeck}[2026/08/15 v1.0 Beamer fonts]
+
+\mode<presentation>
+
+% Slides are sans-serif throughout; maths keeps its own font.
+\usefonttheme{default}
+\renewcommand{\familydefault}{\sfdefault}
+
+% --- Title slide ------------------------------------------------------------
+\setbeamerfont{title}    {size=\LARGE, series=\bfseries}
+\setbeamerfont{subtitle} {size=\large, series=\mdseries}
+\setbeamerfont{author}   {size=\normalsize}
+\setbeamerfont{institute}{size=\small}
+\setbeamerfont{date}     {size=\small}
+
+% --- Frame titles -----------------------------------------------------------
+\setbeamerfont{frametitle}   {size=\Large, series=\bfseries}
+\setbeamerfont{framesubtitle}{size=\small, series=\mdseries}
+
+% --- Section dividers -------------------------------------------------------
+\setbeamerfont{section title} {size=\LARGE, series=\bfseries}
+\setbeamerfont{section number}{size=\Large, series=\bfseries}
+
+% --- Structure --------------------------------------------------------------
+\setbeamerfont{block title}  {size=\normalsize, series=\bfseries}
+\setbeamerfont{block body}   {size=\normalsize}
+\setbeamerfont{footline}     {size=\scriptsize}
+\setbeamerfont{caption}      {size=\small}
+\setbeamerfont{caption name} {series=\bfseries}
+\setbeamerfont{footnote}     {size=\scriptsize}
+
+% --- Table of contents ------------------------------------------------------
+\setbeamerfont{section in toc}   {size=\normalsize, series=\bfseries}
+\setbeamerfont{subsection in toc}{size=\small,      series=\mdseries}
+
+% --- Bibliography (slides need this smaller than an article would) ---------
+\setbeamerfont{bibliography entry author}{size=\scriptsize}
+\setbeamerfont{bibliography entry title} {size=\scriptsize, series=\mdseries}
+\setbeamerfont{bibliography entry note}  {size=\scriptsize}
+\setbeamerfont{bibliography item}        {size=\scriptsize}
+
+\mode<all>
+\endinput

@@ -1,0 +1,50 @@
+% ============================================================================
+%  showcase/main.tex  --  demonstrates every feature of the template
+% ----------------------------------------------------------------------------
+%  This deck is the reference: if something works here, it works in your deck.
+%  It is also what the verification sweep builds.
+%
+%  Build under all three engines to confirm the template is engine-agnostic:
+%      latexmk                 (pdflatex -- Thai falls back to Garuda)
+%      latexmk -xelatex        (real Sarabun)
+%      latexmk -lualatex       (real Sarabun)
+% ============================================================================
+
+\documentclass[dvipsnames,10pt,aspectratio=169]{beamer}
+
+\usetheme{deck}
+
+\input{base}
+\input{math}
+\input{code}
+\input{figures}
+\input{macros}
+\input{lang-thai}
+
+\input{bib}
+\addbibresource{refs.bib}
+
+\input{metadata}
+
+% ============================================================================
+\begin{document}
+
+\begin{frame}[plain]
+  \titlepage
+\end{frame}
+
+\begin{frame}{Outline}
+  \tableofcontents
+\end{frame}
+
+\input{sections/01-basics}
+\input{sections/02-math-code}
+\input{sections/03-figures}
+\input{sections/04-thai}
+
+\bibliographyframe
+
+\appendix
+\input{sections/99-appendix}
+
+\end{document}

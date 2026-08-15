@@ -1,0 +1,29 @@
+% ============================================================================
+%  preamble/math.tex  --  maths support
+% ----------------------------------------------------------------------------
+%  Load only if the deck contains equations.
+% ============================================================================
+
+\usepackage{amsmath}
+\usepackage{amssymb}    % this loads amsfonts by itself -- no need for both
+\usepackage{mathtools}  % amsmath extensions: \coloneqq, \DeclarePairedDelimiter
+
+% ---------------------------------------------------------------------------
+%  Theorem-like environments, styled to match the theme
+% ---------------------------------------------------------------------------
+\setbeamertemplate{theorems}[numbered]
+
+% ---------------------------------------------------------------------------
+%  Common shorthands. Delete any you do not want.
+% ---------------------------------------------------------------------------
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\E}{\mathbb{E}}          % expectation
+\newcommand{\Prob}{\mathbb{P}}       % probability
+
+\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+
+\newcommand{\argmin}{\operatorname*{arg\,min}}
+\newcommand{\argmax}{\operatorname*{arg\,max}}

@@ -1,0 +1,50 @@
+\section{Figures}
+
+\begin{frame}{A TikZ diagram}
+  \centering
+  \begin{tikzpicture}[node distance=14mm and 18mm]
+    \node[deckbox]                        (data)  {Raw\\data};
+    \node[deckbox,       right=of data]   (prep)  {Pre-\\processing};
+    \node[deckaccentbox, right=of prep]   (model) {Model};
+    \node[deckbox,       right=of model]  (out)   {Output};
+
+    \draw[deckarrow] (data)  -- (prep);
+    \draw[deckarrow] (prep)  -- (model);
+    \draw[deckarrow] (model) -- (out);
+
+    \draw[deckarrow, dashed] (out.south) .. controls +(0,-10mm) and +(0,-10mm) ..
+      node[below, font=\scriptsize, text=BrandMuted] {feedback} (model.south);
+  \end{tikzpicture}
+
+  \source{Drawn in TikZ, so it uses the same fonts as the slide.}
+\end{frame}
+
+\begin{frame}{A pgfplots chart}
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[
+      deck,
+      title  = {Accuracy against training epochs},
+      xlabel = {Epoch},
+      ylabel = {Accuracy (\%)},
+      legend pos = south east,
+    ]
+      \addplot coordinates {(1,62)(2,71)(3,78)(4,83)(5,86)(6,88)(7,89)(8,90)};
+      \addlegendentry{Baseline}
+      \addplot coordinates {(1,68)(2,79)(3,85)(4,89)(5,91)(6,92)(7,93)(8,93)};
+      \addlegendentry{Ours}
+    \end{axis}
+  \end{tikzpicture}
+\end{frame}
+
+\begin{frame}{Citations}
+  \TeX{} was created by Knuth \parencite{knuth1984}, and
+  \textcite{lamport1994} built \LaTeX{} on top of it.
+
+  Thai digital typography is surveyed in \parencite{tantisiriwat2020}.
+
+  \begin{block}{Citation commands}
+    \code{\textbackslash parencite} gives (Author, Year); \quad
+    \code{\textbackslash textcite} gives Author (Year).
+  \end{block}
+\end{frame}

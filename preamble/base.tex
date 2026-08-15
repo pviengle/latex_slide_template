@@ -1,0 +1,51 @@
+% ============================================================================
+%  preamble/base.tex  --  the core setup every deck needs
+% ----------------------------------------------------------------------------
+%  Load this first. It pulls in the engine/font setup, then the small set of
+%  packages that essentially every slide deck uses.
+%
+%  Optional modules (maths, code, figures, bibliography, Thai) are separate
+%  files -- load only the ones a given deck actually needs.
+% ============================================================================
+
+% --- Engine + font setup (must come first) ---------------------------------
+\input{engine}
+
+% --- Text ------------------------------------------------------------------
+\usepackage{verbatim}      % verbatim text, and the handy `comment` environment
+\usepackage{array}         % better tabular column types: >{} <{} m{} b{}
+\usepackage{booktabs}      % \toprule \midrule \bottomrule -- proper table rules
+\usepackage{multirow}
+\usepackage{ragged2e}      % \justifying, better \raggedright with hyphenation
+\usepackage{microtype}     % subtle spacing improvements; free quality win
+
+% --- Graphics --------------------------------------------------------------
+\usepackage{graphicx}
+\graphicspath{{figures/}{./}}
+
+% --- Slide utilities -------------------------------------------------------
+\usepackage{appendixnumberbeamer}  % stops the appendix inflating the slide count
+
+% ---------------------------------------------------------------------------
+%  WARNING SUPPRESSION
+%  The `silence` package can mute LaTeX warnings. Used with care it keeps the
+%  build log readable; used as a blanket mute it hides real problems.
+%
+%  Each line below is targeted and explained. Do not add \WarningsOff with no
+%  argument -- that turns off ALL warnings, including ones you need to see.
+% ---------------------------------------------------------------------------
+\usepackage{silence}
+
+% Beamer warns that \RequirePackage'ing a font package in a theme "may not
+% work as expected". It does work here; the warning is noise on every run.
+\WarningFilter{beamer}{Unknown document class option}
+
+% Beamer's own "Font shape ... undefined" chatter when a bold small-caps
+% variant is requested and substituted. The substitution is correct.
+\WarningFilter{latexfont}{Font shape}
+
+% ---------------------------------------------------------------------------
+%  Nicer defaults
+% ---------------------------------------------------------------------------
+\setlength{\parskip}{0.5em}
+\setlength{\parindent}{0pt}
