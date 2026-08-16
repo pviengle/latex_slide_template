@@ -1,3 +1,6 @@
+% !TeX program = pdflatex
+% !BIB program = biber
+% !TeX encoding = UTF-8
 % ============================================================================
 %  showcase/main.tex  --  demonstrates every feature of the template
 % ----------------------------------------------------------------------------
@@ -11,6 +14,13 @@
 % ============================================================================
 
 \documentclass[dvipsnames,10pt,aspectratio=169]{beamer}
+
+% Teach LaTeX where theme/ and preamble/ are, so a bare `pdflatex main.tex`
+% works without TEXINPUTS. See decks/_template/main.tex for the full comment.
+\providecommand{\deckroot}{../../}
+\makeatletter
+  \edef\input@path{{\deckroot theme/}{\deckroot preamble/}}
+\makeatother
 
 \usetheme{deck}
 

@@ -8,6 +8,9 @@
 %  files -- load only the ones a given deck actually needs.
 % ============================================================================
 
+% Safety net: main.tex normally sets this (see decks/_template/main.tex).
+\providecommand{\deckroot}{../../}
+
 % --- Engine + font setup (must come first) ---------------------------------
 \input{engine}
 
@@ -21,7 +24,10 @@
 
 % --- Graphics --------------------------------------------------------------
 \usepackage{graphicx}
-\graphicspath{{figures/}{./}}
+%  Where \includegraphics looks, in order: this deck's figures/, the deck
+%  folder itself, then the shared theme assets (so \includegraphics{logo...}
+%  works from any deck without spelling out a path).
+\graphicspath{{figures/}{./}{\deckroot theme/assets/}}
 
 % --- Slide utilities -------------------------------------------------------
 \usepackage{appendixnumberbeamer}  % stops the appendix inflating the slide count

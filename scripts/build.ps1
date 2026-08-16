@@ -46,6 +46,18 @@ $EngineFlag = switch ($Engine) {
     default { $null }
 }
 
+# Accept the deck as a bare name or as a path, and reduce it to the name:
+#   showcase  decks/showcase  decks\showcase\sections  ->  showcase
+# VS Code's ${relativeFileDirname} hands us the last of those, and tab
+# completion in a shell produces the middle one.
+if ($Deck -ne 'all') {
+    $Parts = @($Deck -split '[\\/]+' | Where-Object { $_ -and $_ -ne '.' })
+    if ($Parts.Count -gt 0 -and $Parts[0] -eq 'decks') {
+        $Parts = @($Parts | Select-Object -Skip 1)
+    }
+    if ($Parts.Count -gt 0) { $Deck = $Parts[0] }
+}
+
 # Which decks? Anything with a main.tex, skipping the _template scaffold.
 if ($Deck -eq 'all') {
     $Targets = Get-ChildItem -Path $DecksDir -Directory |
@@ -100,6 +112,22 @@ foreach ($Target in $Targets) {
                 Write-Host "    engine changed -> cleaning first" -ForegroundColor DarkGray
                 Remove-Item -Recurse -Force 'out'
             }
+        }
+
+        # --- In-editor leftovers ---------------------------------------------
+        #  TeXstudio (and TeXworks, TeXShop, ...) build in place, leaving
+        #  main.aux next to main.tex. latexmk keeps its own copy in out/, so a
+        #  top-level main.aux is never ours -- but TeX still finds it on the
+        #  search path, and a pdflatex run chokes on one that xelatex wrote
+        #  (it holds \xpg@aux). The engine stamp above cannot see these, so
+        #  clear them separately. main.pdf, main.log and main.synctex.gz are
+        #  left alone: harmless, and the PDF is the one the editor is showing.
+        $Stray = @('aux', 'bbl', 'bcf', 'run.xml', 'toc', 'nav', 'snm', 'out', 'vrb') |
+                 ForEach-Object { "main.$_" } |
+                 Where-Object { Test-Path $_ }
+        if ($Stray) {
+            Write-Host "    clearing in-editor leftovers: $($Stray -join ' ')" -ForegroundColor DarkGray
+            Remove-Item -Force $Stray
         }
 
         $LatexmkArgs = @('-interaction=nonstopmode', '-halt-on-error')

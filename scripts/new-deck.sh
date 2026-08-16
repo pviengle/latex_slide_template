@@ -58,6 +58,9 @@ fi
 # --- Thai: enable the module and switch the deck to xelatex ----------------
 if [ "$THAI" -eq 1 ]; then
   perl -pi -e 's/^% \\input\{lang-thai\}/\\input{lang-thai}/' "$DEST/main.tex"
+  # Retarget the TeXstudio / TeXworks engine hint at the top of the file, so
+  # pressing build in the editor picks xelatex without any menu digging.
+  perl -pi -e 's/^% !TeX program = pdflatex/% !TeX program = xelatex/' "$DEST/main.tex"
   perl -pi -e 's/^# \$pdf_mode = 5;/\$pdf_mode = 5;/'          "$DEST/.latexmkrc"
   echo "Thai enabled: lang-thai loaded, engine set to xelatex (needed for Sarabun)."
 fi

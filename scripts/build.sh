@@ -47,6 +47,17 @@ case "$ENGINE" in
   *) echo "Unknown engine '$ENGINE' (use pdf, xe or lua)" >&2; exit 2 ;;
 esac
 
+# Accept the deck as a bare name or as a path, and reduce it to the name:
+#   showcase  decks/showcase  decks/showcase/sections  ->  showcase
+# VS Code's ${relativeFileDirname} hands us the last of those, and tab
+# completion in a shell produces the middle one.
+if [ "$DECK" != "all" ]; then
+  DECK="${DECK//\\//}"      # accept backslashes too
+  DECK="${DECK#./}"
+  DECK="${DECK#decks/}"
+  DECK="${DECK%%/*}"
+fi
+
 # Which decks? Anything with a main.tex, skipping the _template scaffold.
 TARGETS=()
 if [ "$DECK" = "all" ]; then
@@ -99,6 +110,23 @@ for target in "${TARGETS[@]}"; do
   if [ -f out/.engine ] && [ "$(cat out/.engine)" != "$engine_label" ]; then
     echo "    engine changed -> cleaning first"
     rm -rf out
+  fi
+
+  # --- In-editor leftovers --------------------------------------------------
+  #  TeXstudio (and TeXworks, TeXShop, ...) build in place, leaving main.aux
+  #  next to main.tex. latexmk keeps its own copy in out/, so a top-level
+  #  main.aux is never ours -- but TeX still finds it on the search path, and
+  #  a pdflatex run chokes on one that xelatex wrote (it holds \xpg@aux).
+  #  The engine stamp above cannot see these, so clear them separately.
+  #  main.pdf, main.log and main.synctex.gz are left alone: harmless, and the
+  #  PDF is the one the editor is showing.
+  stray=""
+  for ext in aux bbl bcf run.xml toc nav snm out vrb; do
+    [ -f "main.$ext" ] && stray="$stray main.$ext"
+  done
+  if [ -n "$stray" ]; then
+    echo "    clearing in-editor leftovers:$stray"
+    rm -f $stray
   fi
 
   args=(-interaction=nonstopmode -halt-on-error)

@@ -53,6 +53,9 @@ if ($Thai) {
     $MainPath = Join-Path $Dest 'main.tex'
     $Main     = Get-Content $MainPath -Raw
     $Main     = $Main -replace '(?m)^% \\input\{lang-thai\}', '\input{lang-thai}'
+    # Retarget the TeXstudio / TeXworks engine hint at the top of the file,
+    # so pressing build in the editor picks xelatex without any menu digging.
+    $Main     = $Main -replace '(?m)^% !TeX program = pdflatex', '% !TeX program = xelatex'
     Set-Content -Path $MainPath -Value $Main -Encoding utf8 -NoNewline
 
     $RcPath = Join-Path $Dest '.latexmkrc'

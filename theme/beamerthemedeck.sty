@@ -18,25 +18,26 @@
 \ProvidesPackage{beamerthemedeck}[2026/08/15 v1.0 Beamer beamer theme]
 
 % ---------------------------------------------------------------------------
-%  \themepath lets this theme be found in two different ways:
+%  HOW THIS FILE GETS FOUND
 %
-%    1. Normal builds: latexmk puts theme/ on TEXINPUTS, so \themepath is
-%       empty and LaTeX finds the sub-files on its own.
-%    2. Overleaf / no-latexmk builds: main.tex defines
-%       \def\themepath{../../theme/} BEFORE \usetheme, and the sub-files are
-%       then found by relative path.
+%  Every deck's main.tex opens with
+%      \providecommand{\deckroot}{../../}
+%      \makeatletter \edef\input@path{{\deckroot theme/}{\deckroot preamble/}}
+%      \makeatother
+%  which puts this folder on LaTeX's search path. That is all \usetheme{deck}
+%  needs -- it works under a bare `pdflatex main.tex`, under TeXstudio, under
+%  latexmk and on Overleaf alike, with no TEXINPUTS and no build script.
 %
-%  \providecommand only defines it if it is not already defined, so option 2
-%  wins when present and option 1 is the default.
+%  Because \input@path is still in force here, the four \use...theme lines
+%  below find their files by the same route. Nothing else to configure.
 % ---------------------------------------------------------------------------
-\providecommand{\themepath}{}
 
 \mode<presentation>
 
-\usecolortheme{\themepath deck}
-\usefonttheme{\themepath deck}
-\useinnertheme{\themepath deck}
-\useoutertheme{\themepath deck}
+\usecolortheme{deck}
+\usefonttheme{deck}
+\useinnertheme{deck}
+\useoutertheme{deck}
 
 \mode<all>
 \endinput

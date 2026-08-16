@@ -1,8 +1,16 @@
+% !TeX program = pdflatex
+% !BIB program = biber
+% !TeX encoding = UTF-8
 % ============================================================================
 %  main.tex  --  the deck
 % ----------------------------------------------------------------------------
-%  Build it:   from this folder, run   latexmk
-%              or from the repo root:  .\scripts\build.ps1 -Deck <foldername>
+%  Build it, whichever you prefer:
+%     TeXstudio / TeXworks / Overleaf   just press the green build button
+%     terminal, from this folder        latexmk
+%     terminal, from the repo root      .\scripts\build.ps1 -Deck <foldername>
+%
+%  The three "% !TeX" lines above tell TeXstudio which engine and which
+%  bibliography tool this deck wants. Leave them at the top of the file.
 % ============================================================================
 
 \documentclass[dvipsnames,10pt,aspectratio=169]{beamer}
@@ -11,6 +19,24 @@
 %                |         +-------- base font size
 %                +------------------ unlocks 68 extra colour names
 %                                    (RoyalBlue, BrickRed, ForestGreen, ...)
+
+% ---------------------------------------------------------------------------
+%  WHERE THE SHARED FILES LIVE
+%
+%  \deckroot is the way back from this file to the folder that holds theme/
+%  and preamble/. The two lines after it tell LaTeX to look in those folders,
+%  which is what makes a plain `pdflatex main.tex` work -- no editor setup, no
+%  environment variables, no build script required.
+%
+%  If you move this deck, this ONE line is the only thing to change:
+%     ../../     deck sits in decks/<name>/   <- the normal case
+%     (empty)    deck carries its own copy of theme/ and preamble/ beside it
+%                (that is what scripts/export-deck produces)
+% ---------------------------------------------------------------------------
+\providecommand{\deckroot}{../../}
+\makeatletter
+  \edef\input@path{{\deckroot theme/}{\deckroot preamble/}}
+\makeatother
 
 % --- Theme -----------------------------------------------------------------
 \usetheme{deck}

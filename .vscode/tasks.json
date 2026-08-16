@@ -62,6 +62,16 @@
       "linux":   { "command": "bash", "args": ["${workspaceFolder}/scripts/new-deck.sh", "-n", "${input:deckName}"] },
       "options": { "cwd": "${workspaceFolder}" },
       "problemMatcher": []
+    },
+    {
+      "label": "Export this deck (standalone)",
+      "detail": "Bundle the deck you are editing, with theme and fonts, into export/<name>",
+      "type": "shell",
+      "windows": { "command": "powershell", "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}/scripts/export-deck.ps1", "-Deck", "${relativeFileDirname}", "-Force"] },
+      "osx":     { "command": "bash", "args": ["${workspaceFolder}/scripts/export-deck.sh", "-d", "${relativeFileDirname}", "-f"] },
+      "linux":   { "command": "bash", "args": ["${workspaceFolder}/scripts/export-deck.sh", "-d", "${relativeFileDirname}", "-f"] },
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": []
     }
   ],
   "inputs": [

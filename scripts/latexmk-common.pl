@@ -15,14 +15,26 @@ use Cwd qw(abs_path);
 my $repo = abs_path('../..');
 
 # --- Make theme/ and preamble/ visible to \usepackage and \usetheme ---------
-#  LaTeX only searches the current directory by default, so `\usetheme{deck}`
-#  would not find theme/beamerthemedeck.sty. Prepending these to TEXINPUTS
-#  fixes that. The trailing "//" means "search this tree recursively"; the
-#  trailing separator means "then search the normal TeX tree as usual".
+#  BELT AND BRACES. Each deck's main.tex already points LaTeX at these folders
+#  itself (the \deckroot / \input@path block at the top of the file), which is
+#  what lets TeXstudio and a bare `pdflatex main.tex` work with no setup.
+#  This TEXINPUTS entry is the backstop for a deck that is missing that block.
+#
+#  The trailing "//" means "search this tree recursively"; the trailing
+#  separator means "then search the normal TeX tree as usual".
 #  Windows kpathsea uses ';' as the path separator, POSIX uses ':'.
 my $sep = ($^O =~ /MSWin|cygwin/i) ? ';' : ':';
 $ENV{TEXINPUTS} = join($sep, "$repo/theme//", "$repo/preamble//",
                              ($ENV{TEXINPUTS} // ''));
+
+# --- SyncTeX ----------------------------------------------------------------
+#  Writes main.synctex.gz, which lets an editor jump between a line of source
+#  and the matching spot in the PDF ("forward/inverse search"). TeXstudio,
+#  VS Code and SumatraPDF all use it. latexmk does not pass this by default,
+#  so each engine command is respecified here with the flag added.
+$pdflatex = 'pdflatex -synctex=1 %O %S';
+$xelatex  = 'xelatex  -synctex=1 %O %S';
+$lualatex = 'lualatex -synctex=1 %O %S';
 
 # --- Bibliography -----------------------------------------------------------
 $bibtex_use = 2;          # run biber/bibtex, and clean .bbl on `latexmk -C`

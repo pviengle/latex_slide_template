@@ -24,6 +24,10 @@
 %  for you if you created it with:  scripts/new-deck.ps1 -Name talk -Thai
 % ============================================================================
 
+% Safety net: main.tex normally sets this. Defined here too so the file still
+% works if it is \input before the bootstrap for some reason.
+\providecommand{\deckroot}{../../}
+
 \ifPDFTeX
   % =========================================================================
   %  pdfLaTeX branch -- Garuda fallback
@@ -79,15 +83,16 @@
   %  font does not need to be installed on the machine -- it travels with the
   %  repo, so a fresh clone and Overleaf both work.
   %
-  %  The path is relative to the deck folder (decks/<name>/), which is two
-  %  levels below the repo root.
+  %  \deckroot is set by main.tex and is the way back to the folder holding
+  %  theme/ -- normally ../../ , or empty for an exported standalone deck.
+  %  Everything stays relative, so the deck can be moved or zipped up whole.
   %
   %  Scale=MatchLowercase: Sarabun's letters are large for their point size
   %  next to Latin text. This scales it so Thai and English on the same line
   %  look the same size instead of the Thai towering over the English.
   % ------------------------------------------------------------------------
   \newfontfamily\thaifont[
-    Path           = ../../theme/assets/fonts/,
+    Path           = \deckroot theme/assets/fonts/,
     Extension      = .ttf,
     UprightFont    = Sarabun-Regular,
     ItalicFont     = Sarabun-Italic,
@@ -99,7 +104,7 @@
 
   % Same font for the sans-serif Thai slot, so \textsf inside Thai works.
   \newfontfamily\thaifontsf[
-    Path           = ../../theme/assets/fonts/,
+    Path           = \deckroot theme/assets/fonts/,
     Extension      = .ttf,
     UprightFont    = Sarabun-Regular,
     ItalicFont     = Sarabun-Italic,

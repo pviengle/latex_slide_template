@@ -1,8 +1,20 @@
+# NOTE: git does NOT support comments at the end of a rule. A "#" partway
+# through a line is part of the pattern, not a comment, and quietly stops the
+# rule from matching anything. Every comment here is on its own line.
+
 # ---- Build output -----------------------------------------------------------
 build/
-decks/*/out/                 # per-deck latexmk intermediates
+
+# standalone deck bundles (scripts/export-deck)
+export/
+
+# per-deck latexmk intermediates
+decks/*/out/
+
 *.pdf
-!theme/assets/*.pdf          # keep the logo, it is a source asset
+
+# keep the logo -- it is a source asset, not build output
+!theme/assets/*.pdf
 
 # ---- LaTeX intermediates ----------------------------------------------------
 *.aux
@@ -19,6 +31,9 @@ decks/*/out/                 # per-deck latexmk intermediates
 *.xdv
 *.dvi
 
+# uncompressed synctex, if an editor asks for it
+*.synctex
+
 # ---- Bibliography (biblatex + biber) ---------------------------------------
 *.bbl
 *.blg
@@ -34,6 +49,10 @@ _minted*/
 *.pyg
 
 # ---- Editor / OS ------------------------------------------------------------
+# TeXstudio session files
+*.txss2
+*.txss
+
 .DS_Store
 Thumbs.db
 *.swp
