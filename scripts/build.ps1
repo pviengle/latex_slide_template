@@ -1,24 +1,31 @@
 <#
 .SYNOPSIS
-  Build one deck, or every deck, and collect the PDFs into build/.
+  Build this presentation.
+
+.DESCRIPTION
+  main.tex in the repo root IS the presentation. One copy of this repo is one
+  talk, so with no arguments this builds that. The PDF is named after the
+  folder, so a copy called opdc-5stars\ produces build\opdc-5stars.pdf.
 
 .EXAMPLE
-  .\scripts\build.ps1                       # build every deck, default engine
-  .\scripts\build.ps1 -Deck showcase        # build one deck
-  .\scripts\build.ps1 -Deck showcase -Engine xe
-  .\scripts\build.ps1 -Deck showcase -Watch # rebuild on every save
+  .\scripts\build.ps1                       # build this presentation
+  .\scripts\build.ps1 -Engine xe            # force xelatex
+  .\scripts\build.ps1 -Watch                # rebuild on every save
   .\scripts\build.ps1 -Clean                # remove intermediates first
+  .\scripts\build.ps1 -Deck showcase        # build a deck in a subfolder
+  .\scripts\build.ps1 -All                  # this one plus every subfolder
 
 .NOTES
   macOS / Linux users: use scripts/build.sh instead. Same options.
 #>
 [CmdletBinding()]
 param(
-    [string]$Deck = 'all',
+    [string]$Deck,
     [ValidateSet('default', 'pdf', 'xe', 'lua')]
     [string]$Engine = 'default',
     [switch]$Watch,
-    [switch]$Clean
+    [switch]$Clean,
+    [switch]$All
 )
 
 # NOTE: deliberately NOT 'Stop'.
@@ -30,7 +37,6 @@ param(
 $ErrorActionPreference = 'Continue'
 
 $RepoRoot = Split-Path -Parent $PSScriptRoot
-$DecksDir = Join-Path $RepoRoot 'decks'
 $BuildDir = Join-Path $RepoRoot 'build'
 
 if (-not (Test-Path $BuildDir)) {
@@ -38,7 +44,7 @@ if (-not (Test-Path $BuildDir)) {
 }
 
 # Map the friendly engine name onto the latexmk flag. 'default' passes nothing,
-# so the deck's own .latexmkrc decides -- which is how Thai decks select xelatex.
+# so the deck's own .latexmkrc decides -- which is how Thai selects xelatex.
 $EngineFlag = switch ($Engine) {
     'pdf'  { '-pdf' }
     'xe'   { '-xelatex' }
@@ -46,41 +52,41 @@ $EngineFlag = switch ($Engine) {
     default { $null }
 }
 
-# Accept the deck as a bare name or as a path, and reduce it to the name:
-#   showcase  decks/showcase  decks\showcase\sections  ->  showcase
-# VS Code's ${relativeFileDirname} hands us the last of those, and tab
-# completion in a shell produces the middle one.
-if ($Deck -ne 'all') {
-    $Parts = @($Deck -split '[\\/]+' | Where-Object { $_ -and $_ -ne '.' })
-    if ($Parts.Count -gt 0 -and $Parts[0] -eq 'decks') {
-        $Parts = @($Parts | Select-Object -Skip 1)
-    }
-    if ($Parts.Count -gt 0) { $Deck = $Parts[0] }
-}
+# --- Which folders? ---------------------------------------------------------
+#  The root folder is the presentation. Subfolders holding their own main.tex
+#  are extra decks kept alongside it (showcase is one).
+$Skip = @('build', 'out', 'scripts', 'theme', 'preamble', 'figures', 'sections')
+$Targets = @()
 
-# Which decks? Anything with a main.tex, skipping the _template scaffold.
-if ($Deck -eq 'all') {
-    $Targets = Get-ChildItem -Path $DecksDir -Directory |
-               Where-Object { $_.Name -ne '_template' -and (Test-Path (Join-Path $_.FullName 'main.tex')) }
-} else {
-    $Path = Join-Path $DecksDir $Deck
+if ($Deck) {
+    $Parts = @($Deck -split '[\\/]+' | Where-Object { $_ -and $_ -ne '.' })
+    if ($Parts.Count -gt 0) { $Deck = $Parts[0] }
+    $Path = Join-Path $RepoRoot $Deck
     if (-not (Test-Path (Join-Path $Path 'main.tex'))) {
         Write-Host "No deck named '$Deck' (looked for $Path\main.tex)" -ForegroundColor Red
         exit 1
     }
     $Targets = @(Get-Item $Path)
-}
-
-if ($Targets.Count -eq 0) {
-    Write-Warning "No decks found in $DecksDir"
-    return
+} elseif ($All) {
+    $Targets = @(Get-Item $RepoRoot)
+    $Targets += Get-ChildItem -Path $RepoRoot -Directory |
+                Where-Object { $Skip -notcontains $_.Name -and
+                               (Test-Path (Join-Path $_.FullName 'main.tex')) }
+} else {
+    if (-not (Test-Path (Join-Path $RepoRoot 'main.tex'))) {
+        Write-Host "No main.tex in $RepoRoot -- is this the right folder?" -ForegroundColor Red
+        exit 1
+    }
+    $Targets = @(Get-Item $RepoRoot)
 }
 
 $Failed = @()
 
 foreach ($Target in $Targets) {
+    # The root deck is named after the folder the repo was copied to.
+    $Name = $Target.Name
     Write-Host ""
-    Write-Host "==> $($Target.Name)" -ForegroundColor Cyan
+    Write-Host "==> $Name" -ForegroundColor Cyan
 
     Push-Location $Target.FullName
     try {
@@ -89,16 +95,11 @@ foreach ($Target in $Targets) {
         }
 
         # --- Engine-change guard --------------------------------------------
-        #  XeLaTeX and LuaLaTeX write polyglossia macros such as \xpg@aux into
-        #  the .aux file. pdfLaTeX does not load polyglossia, so reading a
-        #  stale .aux left by another engine kills the build with
-        #  "Undefined control sequence \xpg@aux".
-        #
-        #  So: remember which engine produced the current out/ folder, and
-        #  wipe it whenever the engine changes.
+        #  Remember which engine produced the current out/ folder and wipe it
+        #  when the engine changes: intermediates written by one engine are
+        #  not readable by another.
         $EngineLabel = $Engine
         if ($EngineLabel -eq 'default') {
-            # Work out what the deck's own .latexmkrc selects.
             $EngineLabel = 'pdf'
             if (Test-Path '.latexmkrc') {
                 $Rc = Get-Content '.latexmkrc' -Raw
@@ -118,10 +119,9 @@ foreach ($Target in $Targets) {
         #  TeXstudio (and TeXworks, TeXShop, ...) build in place, leaving
         #  main.aux next to main.tex. latexmk keeps its own copy in out/, so a
         #  top-level main.aux is never ours -- but TeX still finds it on the
-        #  search path, and a pdflatex run chokes on one that xelatex wrote
-        #  (it holds \xpg@aux). The engine stamp above cannot see these, so
-        #  clear them separately. main.pdf, main.log and main.synctex.gz are
-        #  left alone: harmless, and the PDF is the one the editor is showing.
+        #  search path, and one written by a different engine breaks the
+        #  build. main.pdf, main.log and main.synctex.gz are left alone:
+        #  harmless, and the PDF is the one the editor is showing.
         $Stray = @('aux', 'bbl', 'bcf', 'run.xml', 'toc', 'nav', 'snm', 'out', 'vrb') |
                  ForEach-Object { "main.$_" } |
                  Where-Object { Test-Path $_ }
@@ -139,15 +139,14 @@ foreach ($Target in $Targets) {
         $Code = $LASTEXITCODE
 
         if ($Code -ne 0) {
-            Write-Host "    FAILED (exit $Code) - see $($Target.Name)\out\main.log" -ForegroundColor Red
-            $Failed += $Target.Name
+            Write-Host "    FAILED (exit $Code) - see $Name\out\main.log" -ForegroundColor Red
+            $Failed += $Name
         } else {
             Set-Content -Path $Stamp -Value $EngineLabel -Encoding ascii
             $Pdf = Join-Path $Target.FullName 'out\main.pdf'
             if (Test-Path $Pdf) {
-                $Dest = Join-Path $BuildDir "$($Target.Name).pdf"
-                Copy-Item $Pdf $Dest -Force
-                Write-Host "    OK -> build\$($Target.Name).pdf" -ForegroundColor Green
+                Copy-Item $Pdf (Join-Path $BuildDir "$Name.pdf") -Force
+                Write-Host "    OK -> build\$Name.pdf" -ForegroundColor Green
             }
         }
     }
@@ -161,4 +160,4 @@ if ($Failed.Count -gt 0) {
     Write-Host "Failed: $($Failed -join ', ')" -ForegroundColor Red
     exit 1
 }
-Write-Host "All decks built." -ForegroundColor Green
+Write-Host "Done." -ForegroundColor Green

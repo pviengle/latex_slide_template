@@ -5,11 +5,9 @@
 # ---- Build output -----------------------------------------------------------
 build/
 
-# standalone deck bundles (scripts/export-deck)
-export/
-
-# per-deck latexmk intermediates
-decks/*/out/
+# latexmk intermediates, for the root deck and any deck in a subfolder
+out/
+*/out/
 
 *.pdf
 

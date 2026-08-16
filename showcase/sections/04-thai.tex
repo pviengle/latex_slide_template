@@ -1,39 +1,47 @@
 % !TeX root = ../main.tex
 \section{Thai}
 
-% NOTE the \thaiinline{} around the Thai part of the frame title.
-% Headings are set in Fira Sans, which has no Thai glyphs, so unwrapped Thai
-% in a title comes out as empty boxes. See preamble/lang-thai.tex.
-\begin{frame}{Thai text / \thaiinline{ข้อความภาษาไทย}}
+% Everything on these two slides is typed as plain Thai. There is no wrapping
+% macro anywhere -- that is the point of them. If any of it renders blank,
+% the automatic fallback in preamble/lang-thai.tex has stopped working.
+
+\begin{frame}{Thai text / ข้อความภาษาไทย}
   \begin{block}{Which font are you seeing?}
-    Built with \textbf{XeLaTeX} or \textbf{LuaLaTeX}, the Thai below is
-    \hl{Sarabun} (TH Sarabun New).\\
+    Built with \textbf{XeLaTeX}, the Thai below is \hl{Sarabun} (TH Sarabun
+    New) and the Latin stays Fira Sans.\\
     Built with \textbf{pdfLaTeX}, it falls back to \hl{Garuda}.
   \end{block}
 
-  \begin{thaipar}
-    สวัสดีครับ นี่คือตัวอย่างข้อความภาษาไทยบนสไลด์
-    เพื่อทดสอบว่าฟอนต์แสดงผลถูกต้องหรือไม่
-  \end{thaipar}
-
-  \vspace{0.6em}
-  Mixed in a sentence: the Thai word \thaiinline{ตัวอย่าง} means ``example''.
-\end{frame}
-
-\begin{frame}{Thai list / \thaiinline{รายการภาษาไทย}}
-  \begin{itemize}
-    \item \thaiinline{ข้อแรก} --- first item
-    \item \thaiinline{ข้อที่สอง} --- second item
-    \item \thaiinline{ข้อที่สาม} --- third item
-  \end{itemize}
-
-  \vspace{0.6em}
-  \begin{thaipar}
-    การจัดวางตัวอักษรไทยต้องรองรับสระบนและวรรณยุกต์
-    เช่น ที่ ปี้ กื๊อ ให้แสดงผลได้ถูกต้อง
-  \end{thaipar}
+  สวัสดีครับ นี่คือตัวอย่างข้อความภาษาไทยบนสไลด์ เพื่อทดสอบว่าฟอนต์แสดงผลถูกต้องหรือไม่
 
   \vspace{0.4em}
-  {\scriptsize\color{BrandMuted}The line above deliberately stacks vowel and
-  tone marks --- a good check that the font is rendering properly.}
+  Mixed in a sentence: the Thai word ตัวอย่าง means ``example''.
+
+  \vspace{0.4em}
+  Weight carries across the script boundary: \textbf{Results / ผลลัพธ์}
+  and \textit{italic / ตัวเอียง}.
+\end{frame}
+
+\begin{frame}{Thai list / รายการภาษาไทย}
+  \begin{itemize}
+    \item ข้อแรก --- first item
+    \item ข้อที่สอง --- second item
+    \item ข้อที่สาม --- third item
+  \end{itemize}
+
+  \vspace{0.3em}
+  % Stacked marks: sara above + tone above (ที่ ปี้ กื๊อ), and vowels below
+  % (ปรุง). These are the glyphs that collide if the line spacing is wrong.
+  การจัดวางตัวอักษรไทยต้องรองรับสระบนและวรรณยุกต์ เช่น ที่ ปี้ กื๊อ ให้แสดงผลได้ถูกต้อง
+
+  \vspace{0.3em}
+  % A paragraph long enough to wrap several times. This is the real test:
+  % Thai has no spaces between words, so it checks both that the lines break
+  % at word boundaries (no hyphen mid-word) and that consecutive lines are
+  % far enough apart for the marks above and below to clear each other.
+  มาตรฐานข้อมูลเปิดระดับ 5 ดาว เป็นกรอบการประเมินคุณภาพข้อมูลที่ใช้กันอย่างแพร่หลาย
+  โดยพิจารณาจากรูปแบบการเผยแพร่ ความสามารถในการเข้าถึง
+  และการเชื่อมโยงข้อมูลระหว่างแหล่งต่าง ๆ
+  ซึ่งหน่วยงานภาครัฐจำเป็นต้องปรับปรุงกระบวนการจัดเก็บและเผยแพร่ข้อมูลให้สอดคล้องกับเกณฑ์ดังกล่าว
+  เพื่อให้ประชาชนสามารถนำข้อมูลไปใช้ประโยชน์ได้อย่างเต็มที่และมีประสิทธิภาพสูงสุด
 \end{frame}

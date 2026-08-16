@@ -11,21 +11,29 @@
 
 use Cwd qw(abs_path);
 
-# --- Locate the repo root from the deck directory ---------------------------
-my $repo = abs_path('../..');
+# --- Locate the folder holding theme/ and preamble/ -------------------------
+#  Searched the same way main.tex searches, and for the same reason: the deck
+#  may sit in decks/<name>/, or have been copied somewhere else entirely. Do
+#  not assume '../..'.
+my $repo;
+foreach my $p ('.', '..', '../..', '../../..') {
+  if (-d "$p/theme" && -d "$p/preamble") { $repo = abs_path($p); last; }
+}
 
 # --- Make theme/ and preamble/ visible to \usepackage and \usetheme ---------
-#  BELT AND BRACES. Each deck's main.tex already points LaTeX at these folders
-#  itself (the \deckroot / \input@path block at the top of the file), which is
-#  what lets TeXstudio and a bare `pdflatex main.tex` work with no setup.
-#  This TEXINPUTS entry is the backstop for a deck that is missing that block.
+#  BELT AND BRACES. Each deck's main.tex already finds these folders itself
+#  (the \deck@probe / \input@path block at the top of the file), which is what
+#  lets TeXstudio and a bare `xelatex main.tex` work with no setup at all.
+#  This TEXINPUTS entry is only a backstop for a deck missing that block.
 #
 #  The trailing "//" means "search this tree recursively"; the trailing
 #  separator means "then search the normal TeX tree as usual".
 #  Windows kpathsea uses ';' as the path separator, POSIX uses ':'.
-my $sep = ($^O =~ /MSWin|cygwin/i) ? ';' : ':';
-$ENV{TEXINPUTS} = join($sep, "$repo/theme//", "$repo/preamble//",
-                             ($ENV{TEXINPUTS} // ''));
+if (defined $repo) {
+  my $sep = ($^O =~ /MSWin|cygwin/i) ? ';' : ':';
+  $ENV{TEXINPUTS} = join($sep, "$repo/theme//", "$repo/preamble//",
+                               ($ENV{TEXINPUTS} // ''));
+}
 
 # --- SyncTeX ----------------------------------------------------------------
 #  Writes main.synctex.gz, which lets an editor jump between a line of source
@@ -35,6 +43,13 @@ $ENV{TEXINPUTS} = join($sep, "$repo/theme//", "$repo/preamble//",
 $pdflatex = 'pdflatex -synctex=1 %O %S';
 $xelatex  = 'xelatex  -synctex=1 %O %S';
 $lualatex = 'lualatex -synctex=1 %O %S';
+
+# --- What a bare `latexmk` builds -------------------------------------------
+#  Without this, latexmk compiles EVERY .tex file in the deck folder -- which
+#  means metadata.tex and each file in sections/, none of which have a
+#  \begin{document}. The build then "fails" with "Missing \begin{document}"
+#  even though main.pdf came out perfectly.
+@default_files = ('main.tex');
 
 # --- Bibliography -----------------------------------------------------------
 $bibtex_use = 2;          # run biber/bibtex, and clean .bbl on `latexmk -C`

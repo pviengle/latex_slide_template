@@ -43,12 +43,12 @@ To check it is installed, open a terminal and type `latexmk -v`. If you see a ve
 
 **Windows**
 ```powershell
-.\scripts\build.ps1 -Deck showcase
+.\scripts\build.ps1                 # -> build\<folder-name>.pdf
 ```
 
 **macOS / Linux**
 ```bash
-./scripts/build.sh -d showcase
+./scripts/build.sh
 ```
 
 **EN.** The PDF appears at `build/showcase.pdf`. Open it — you will see every feature this template offers.
@@ -65,14 +65,14 @@ To check it is installed, open a terminal and type `latexmk -v`. If you see a ve
 
 **EN.** You do not have to use the scripts. If you prefer a normal editor with a build button, this template works in **TeXstudio** with **no settings to change at all**.
 
-1. Open **`decks/showcase/main.tex`** in TeXstudio.
+1. Open **`main.tex`** in TeXstudio (the one in this folder — it is the presentation).
 2. Press the green **Build & View** arrow (or `F5`).
 
 That is the whole procedure. It works because the first lines of every `main.tex` tell TeXstudio what it needs to know, and because `main.tex` finds the shared theme by itself.
 
 **TH.** คุณไม่จำเป็นต้องใช้สคริปต์ ถ้าถนัดโปรแกรมแก้ไขข้อความที่มีปุ่มสร้างไฟล์ เทมเพลตนี้ใช้กับ **TeXstudio** ได้เลย **โดยไม่ต้องตั้งค่าอะไรเลย**
 
-1. เปิดไฟล์ **`decks/showcase/main.tex`** ใน TeXstudio
+1. เปิดไฟล์ **`main.tex`** ใน TeXstudio (ไฟล์ที่อยู่ในโฟลเดอร์นี้ คือตัวสไลด์)
 2. กดปุ่มลูกศรสีเขียว **Build & View** (หรือปุ่ม `F5`)
 
 เท่านี้เอง ที่ทำได้เพราะบรรทัดแรก ๆ ของไฟล์ `main.tex` ทุกไฟล์บอกข้อมูลที่ TeXstudio ต้องรู้ไว้แล้ว และตัว `main.tex` หาไฟล์ธีมที่ใช้ร่วมกันเจอเอง
@@ -84,7 +84,7 @@ That is the whole procedure. It works because the first lines of every `main.tex
 **TH.** ที่ด้านบนของไฟล์ `main.tex` ทุกไฟล์ จะเห็นบรรทัดเหล่านี้
 
 ```latex
-% !TeX program = pdflatex
+% !TeX program = xelatex
 % !BIB program = biber
 % !TeX encoding = UTF-8
 ```
@@ -95,9 +95,9 @@ That is the whole procedure. It works because the first lines of every `main.tex
 | `!BIB program` | Uses **biber** for references, not the older bibtex<br>ใช้ **biber** จัดการเอกสารอ้างอิง ไม่ใช่ bibtex รุ่นเก่า |
 | `!TeX encoding` | Keeps Thai text readable<br>ทำให้ข้อความภาษาไทยไม่เพี้ยน |
 
-**EN.** A Thai deck says `xelatex` instead of `pdflatex` on the first line — that is the only difference, and `new-deck` writes it for you. **If you add Thai to a deck by hand, change that first line to `xelatex` yourself.**
+**EN.** It says `xelatex` because Thai is switched on. Thai needs XeLaTeX — it is the only engine that can read Sarabun and the only one that switches to it automatically. **If your talk has no Thai at all**, you may change this to `pdflatex` for a slightly faster build, and set `$pdf_mode = 1` in `.latexmkrc` to match. Change one without the other and the two disagree.
 
-**TH.** สไลด์ที่มีภาษาไทยจะเขียนว่า `xelatex` แทน `pdflatex` ในบรรทัดแรก ต่างกันแค่นั้น และคำสั่ง `new-deck` เขียนให้อัตโนมัติอยู่แล้ว **ถ้าคุณเพิ่มภาษาไทยเข้าไปเอง อย่าลืมแก้บรรทัดแรกเป็น `xelatex` ด้วย**
+**TH.** ที่เขียนว่า `xelatex` เพราะเปิดใช้ภาษาไทยไว้ ภาษาไทยต้องใช้ XeLaTeX เท่านั้น เพราะเป็นโปรแกรมเดียวที่อ่านฟอนต์ Sarabun ได้ และสลับไปใช้ให้เองอัตโนมัติ **ถ้าสไลด์ไม่มีภาษาไทยเลย** จะเปลี่ยนเป็น `pdflatex` เพื่อให้สร้างไฟล์เร็วขึ้นก็ได้ และต้องตั้ง `$pdf_mode = 1` ใน `.latexmkrc` ให้ตรงกันด้วย ถ้าแก้อย่างเดียวจะขัดกัน
 
 **EN.** Each file in `sections/` also starts with `% !TeX root = ../main.tex`. That tells TeXstudio "this is part of a bigger document" — so you can press build while looking at any section file and it still builds the whole talk instead of complaining.
 
@@ -147,114 +147,71 @@ Then add `out` to **Options → Configure TeXstudio → Build → Additional Sea
 
 ## 5. Start your own talk / เริ่มทำสไลด์ของคุณเอง
 
-**EN.** Do not copy files by hand. Run one command and it sets everything up for you.
+**EN.** **Copy this whole folder and rename it.** That is the entire procedure — there is no script to run and nothing inside to repoint.
 
-**TH.** ไม่ต้องคัดลอกไฟล์เอง ใช้คำสั่งเดียวแล้วระบบจะจัดเตรียมให้ทั้งหมด
+**TH.** **คัดลอกโฟลเดอร์นี้ทั้งหมดแล้วเปลี่ยนชื่อ** เท่านี้จบ ไม่ต้องรันสคริปต์ และไม่ต้องแก้เส้นทางไฟล์ใด ๆ ข้างใน
 
-**Windows**
-```powershell
-.\scripts\new-deck.ps1 -Name my-talk
-.\scripts\new-deck.ps1 -Name my-talk -Thai        # if it will contain Thai
+```
+latex_slide_template/   ->   opdc-5stars/          <- copy and rename
 ```
 
-**macOS / Linux**
-```bash
-./scripts/new-deck.sh -n my-talk
-./scripts/new-deck.sh -n my-talk -t               # if it will contain Thai
-```
+**EN.** Then:
 
-**EN.** This creates a folder `decks/my-talk/`. Then:
+1. Open `metadata.tex` and put in your title, name and department.
+2. Write your slides in `sections/`.
+3. Build — press the button in TeXstudio, or run `.\scripts\build.ps1` / `./scripts/build.sh`.
 
-1. Open `decks/my-talk/metadata.tex` and put in your title, name and department.
-2. Write your slides in `decks/my-talk/sections/`.
-3. Build it, the same way as the example above.
+The PDF is named after the folder, so the copy above produces `build/opdc-5stars.pdf`.
 
-**TH.** คำสั่งนี้จะสร้างโฟลเดอร์ `decks/my-talk/` จากนั้น
+**TH.** จากนั้น
 
-1. เปิดไฟล์ `decks/my-talk/metadata.tex` แล้วใส่ชื่อเรื่อง ชื่อคุณ และหน่วยงาน
-2. เขียนสไลด์ในโฟลเดอร์ `decks/my-talk/sections/`
-3. สั่งสร้างไฟล์แบบเดียวกับตัวอย่างข้างบน
+1. เปิดไฟล์ `metadata.tex` แล้วใส่ชื่อเรื่อง ชื่อคุณ และหน่วยงาน
+2. เขียนสไลด์ในโฟลเดอร์ `sections/`
+3. สั่งสร้างไฟล์ กดปุ่มใน TeXstudio หรือรัน `.\scripts\build.ps1` / `./scripts/build.sh`
 
-**EN.** Use `-Thai` / `-t` if the talk has any Thai in it. It turns on Thai support and picks the right settings automatically. You can also turn it on later by hand — see section 9.
+ไฟล์ PDF จะตั้งชื่อตามโฟลเดอร์ ตัวอย่างข้างบนจึงได้ไฟล์ `build/opdc-5stars.pdf`
 
-**TH.** ให้ใช้ `-Thai` หรือ `-t` ถ้าสไลด์มีภาษาไทย ตัวเลือกนี้จะเปิดการรองรับภาษาไทยและตั้งค่าที่ถูกต้องให้อัตโนมัติ หรือจะเปิดใช้เองภายหลังก็ได้ ดูหัวข้อ 9
+**EN.** Thai is already switched on. Type Thai anywhere — you do not need to enable anything or wrap anything. Delete the `\input{lang-thai}` line in `main.tex` if the talk is English-only.
+
+**TH.** ระบบเปิดรองรับภาษาไทยไว้ให้แล้ว พิมพ์ภาษาไทยได้ทุกที่ ไม่ต้องเปิดอะไรเพิ่มและไม่ต้องครอบคำสั่งใด ๆ ถ้าสไลด์เป็นภาษาอังกฤษล้วน ให้ลบบรรทัด `\input{lang-thai}` ใน `main.tex` ออก
 
 ---
 
-## 6. Copying instead of scripting / คัดลอกแทนการใช้สคริปต์
+## 6. What lives where when you copy / คัดลอกแล้วอะไรอยู่ตรงไหน
 
-**EN.** You do not have to use `new-deck`. Copying folders in the file manager works too — as long as you know which of the three copies you are making. All three are supported.
+**EN.** Everything the talk needs is inside the folder, and every path is relative. Nothing points back at the original, so a copy is fully independent — move it, email it, put it on a USB stick, or **upload it to Overleaf** and press Recompile. About 430 KB, fonts included.
 
-**TH.** คุณไม่จำเป็นต้องใช้คำสั่ง `new-deck` จะคัดลอกโฟลเดอร์ในโปรแกรมจัดการไฟล์ก็ได้ ขอแค่รู้ว่ากำลังคัดลอกแบบไหนในสามแบบนี้ ซึ่งรองรับทั้งหมด
-
-### A. Copy one deck, keep it in this repo / คัดลอกสไลด์หนึ่งชุด เก็บไว้ในที่เดิม
-
-**EN.** Copy `decks/showcase` (or any deck) to `decks/my-new-talk`. Then delete the `out` folder inside the copy if there is one, and edit `metadata.tex`. **Nothing else needs changing** — the copy is still two levels below the shared `theme/`, which is what the deck expects.
-
-**TH.** คัดลอกโฟลเดอร์ `decks/showcase` (หรือสไลด์ชุดไหนก็ได้) ไปเป็น `decks/my-new-talk` จากนั้นลบโฟลเดอร์ `out` ในสำเนาทิ้งถ้ามี แล้วแก้ไฟล์ `metadata.tex` **ไม่ต้องแก้อย่างอื่นเลย** เพราะสำเนายังอยู่ลึกลงไปสองชั้นจากโฟลเดอร์ `theme/` ที่ใช้ร่วมกัน ซึ่งตรงกับที่สไลด์คาดหวังไว้
-
-### B. Copy the whole repo / คัดลอกทั้งโฟลเดอร์
-
-**EN.** Copy the entire template folder somewhere else and rename it. It works immediately — every path inside is relative, so nothing points back at the original. Two tidying steps:
-
-**TH.** คัดลอกโฟลเดอร์เทมเพลตทั้งหมดไปไว้ที่อื่นแล้วเปลี่ยนชื่อ ใช้งานได้ทันที เพราะเส้นทางไฟล์ทั้งหมดข้างในเป็นแบบสัมพัทธ์ ไม่มีอะไรชี้กลับไปที่ต้นฉบับ มีสองขั้นตอนสำหรับเก็บกวาด
-
-```powershell
-.\scripts\clean.ps1 -All        # Windows — remove the old build leftovers
-```
-```bash
-./scripts/clean.sh -a           # macOS / Linux
-```
-
-**EN.** …then delete the decks you do not want. Keeping `decks/showcase` is useful: it is the working reference for how everything is written.
-
-**TH.** …แล้วลบสไลด์ชุดที่ไม่ต้องการออก แนะนำให้เก็บ `decks/showcase` ไว้ เพราะเป็นตัวอย่างที่ใช้งานได้จริงสำหรับดูวิธีเขียนแต่ละอย่าง
-
-### C. Copy one deck OUT of the repo / คัดลอกสไลด์ออกไปข้างนอก
-
-**EN.** This is the one that needs help. A deck on its own does **not** build, because the theme lives outside it. So there is a script that packs a deck and everything it needs into a single folder:
-
-**TH.** แบบนี้ต้องใช้ตัวช่วย สไลด์ที่อยู่ลำพัง **สร้างไฟล์ไม่ได้** เพราะไฟล์ธีมอยู่ข้างนอกโฟลเดอร์ จึงมีสคริปต์สำหรับรวมสไลด์กับทุกอย่างที่จำเป็นไว้ในโฟลเดอร์เดียว
-
-```powershell
-.\scripts\export-deck.ps1 -Deck my-talk
-.\scripts\export-deck.ps1 -Deck my-talk -To D:\talks\my-talk
-.\scripts\export-deck.ps1 -Deck my-talk -Zip
-```
-```bash
-./scripts/export-deck.sh -d my-talk
-./scripts/export-deck.sh -d my-talk -t ~/talks/my-talk
-./scripts/export-deck.sh -d my-talk -z
-```
-
-**EN.** Without `-To` / `-t` the result goes to `export/my-talk`. Inside it you get:
-
-**TH.** ถ้าไม่ระบุ `-To` หรือ `-t` ผลลัพธ์จะอยู่ที่ `export/my-talk` ข้างในจะมี
+**TH.** ทุกอย่างที่สไลด์ต้องใช้อยู่ในโฟลเดอร์นี้ และเส้นทางไฟล์ทั้งหมดเป็นแบบสัมพัทธ์ ไม่มีอะไรชี้กลับไปที่ต้นฉบับ สำเนาจึงเป็นอิสระอย่างสมบูรณ์ จะย้าย ส่งอีเมล ใส่แฟลชไดรฟ์ หรือ **อัปโหลดขึ้น Overleaf** แล้วกด Recompile ก็ได้ ขนาดประมาณ 430 KB รวมฟอนต์แล้ว
 
 ```
-my-talk/
-  main.tex  metadata.tex  sections/  figures/  refs.bib
-  theme/              copy of the theme, fonts included / สำเนาธีม รวมฟอนต์
-  preamble/           copy of the shared setup / สำเนาการตั้งค่าที่ใช้ร่วมกัน
-  .latexmkrc          rewritten, points at nothing outside / เขียนใหม่ ไม่ชี้ออกนอกโฟลเดอร์
-  HOW-TO-BUILD.txt    a note for whoever you send it to / คำอธิบายสำหรับคนที่คุณส่งให้
+your-talk/
+  main.tex          the presentation / ตัวสไลด์
+  metadata.tex      title, author / ชื่อเรื่อง ชื่อผู้บรรยาย
+  sections/         your slides / สไลด์ของคุณ
+  figures/          your images / รูปภาพ
+  refs.bib          references / เอกสารอ้างอิง
+  .latexmkrc        engine + build settings / โปรแกรมสร้างไฟล์และการตั้งค่า
+  theme/            the look, and the Sarabun font / ธีมและฟอนต์ Sarabun
+  preamble/         maths, code, figures, Thai / คณิตศาสตร์ โค้ด รูป ภาษาไทย
+  scripts/          build and clean / สคริปต์สร้างและล้างไฟล์
+  showcase/         the worked example / ตัวอย่างที่ใช้งานได้จริง
 ```
 
-**EN.** About 430 KB. That folder is completely independent: move it, email it, put it on a USB stick, or **upload it to Overleaf** and press Recompile. Whoever opens it needs only a LaTeX installation — no fonts and no packages to install, because the fonts travel inside `theme/assets/fonts/`.
+**EN.** `showcase/` is a second, complete deck sitting in a subfolder. It is the working reference for how every feature is written, and it also demonstrates that a deck one level down still finds the shared `theme/`. Delete it once you no longer need it — nothing depends on it.
 
-The script also copies the deck's engine setting across, so a Thai deck stays on XeLaTeX and still shows real Sarabun on someone else's computer.
+**TH.** `showcase/` คือสไลด์อีกชุดที่สมบูรณ์ในตัว วางอยู่ในโฟลเดอร์ย่อย ใช้เป็นตัวอย่างอ้างอิงว่าแต่ละความสามารถเขียนอย่างไร และยังแสดงให้เห็นว่าสไลด์ที่อยู่ลึกลงไปหนึ่งชั้นก็ยังหาโฟลเดอร์ `theme/` ที่ใช้ร่วมกันเจอ ถ้าไม่ต้องการแล้วลบทิ้งได้เลย ไม่มีอะไรพึ่งพามัน
 
-**TH.** ขนาดประมาณ 430 KB โฟลเดอร์นี้เป็นอิสระอย่างสมบูรณ์ จะย้าย ส่งอีเมล ใส่แฟลชไดรฟ์ หรือ **อัปโหลดขึ้น Overleaf** แล้วกด Recompile ก็ได้ คนที่เปิดต้องมีแค่โปรแกรม LaTeX เท่านั้น ไม่ต้องติดตั้งฟอนต์หรือแพ็กเกจใด ๆ เพราะฟอนต์ติดไปกับโฟลเดอร์ `theme/assets/fonts/` อยู่แล้ว
+### Keeping a second talk beside this one / เก็บสไลด์อีกชุดไว้ด้วยกัน
 
-สคริปต์จะคัดลอกการตั้งค่าโปรแกรมสร้างไฟล์ของสไลด์ไปด้วย สไลด์ภาษาไทยจึงยังใช้ XeLaTeX และแสดงฟอนต์ Sarabun จริงบนเครื่องคนอื่นได้เหมือนเดิม
+**EN.** Copy `main.tex`, `metadata.tex`, `sections/` and `.latexmkrc` into a new subfolder, the way `showcase/` is arranged. It will find `theme/` one level up on its own. Build it with `-Deck <foldername>` / `-d <foldername>`, or build everything with `-All` / `-a`.
 
-### Which one do I want? / ควรใช้แบบไหน
+**TH.** คัดลอก `main.tex`, `metadata.tex`, `sections/` และ `.latexmkrc` ไปไว้ในโฟลเดอร์ย่อยใหม่ จัดวางแบบเดียวกับ `showcase/` มันจะหาโฟลเดอร์ `theme/` ที่อยู่เหนือขึ้นไปหนึ่งชั้นเจอเอง สั่งสร้างด้วย `-Deck <ชื่อโฟลเดอร์>` หรือ `-d <ชื่อโฟลเดอร์>` หรือสร้างทั้งหมดด้วย `-All` / `-a`
 
-| I want to… / ต้องการ… | Use / ใช้ |
-|---|---|
-| Make another talk for myself<br>ทำสไลด์อีกชุดสำหรับตัวเอง | `new-deck`, or copy **A** |
-| Start a separate project / hand the whole kit to a team<br>เริ่มโปรเจกต์ใหม่แยกต่างหาก หรือส่งชุดเครื่องมือทั้งหมดให้ทีม | Copy **B** |
-| Send one talk to someone, or use Overleaf<br>ส่งสไลด์ชุดเดียวให้คนอื่น หรือใช้ Overleaf | `export-deck` (**C**) |
+### How it finds the theme / มันหาธีมเจอได้อย่างไร
+
+**EN.** `main.tex` looks for `theme/beamerthemedeck.sty` beside itself, then one, two and three folders up, and uses the first one it finds. That single mechanism is why a copy works at any depth with no file to edit.
+
+**TH.** ไฟล์ `main.tex` จะมองหา `theme/beamerthemedeck.sty` ที่ข้างตัวมันเอง แล้วไล่ขึ้นไปหนึ่ง สอง และสามชั้น ใช้อันแรกที่เจอ กลไกเดียวนี้เองที่ทำให้สำเนาใช้งานได้ทุกระดับความลึกโดยไม่ต้องแก้ไฟล์
 
 ---
 
@@ -316,23 +273,29 @@ There are two ways to write Thai:
 การเขียนภาษาไทยมีสองวิธี
 
 ```latex
-% A few Thai words inside an English sentence
-% คำไทยไม่กี่คำแทรกในประโยคภาษาอังกฤษ
-The word \thaiinline{ตัวอย่าง} means "example".
+% Just type it. Anywhere. There is nothing to wrap.
+% พิมพ์ได้เลย ทุกที่ ไม่ต้องครอบอะไรทั้งนั้น
+The word ตัวอย่าง means "example".
 
-% A whole paragraph in Thai
-% ย่อหน้าภาษาไทยทั้งย่อหน้า
-\begin{thaipar}
-  สวัสดีครับ นี่คือข้อความภาษาไทย
-\end{thaipar}
+\title{มาตรฐานข้อมูลเปิดระดับ 5 ดาว}
+\begin{frame}{Results / ผลลัพธ์}
+
+% Bold and italic carry across the script boundary
+% ตัวหนาและตัวเอียงส่งผลข้ามไปยังภาษาไทยด้วย
+\textbf{Results / ผลลัพธ์}
 ```
 
-> **EN — important:** Thai in a **slide title** must be wrapped too. The heading font has no Thai letters in it, so unwrapped Thai comes out as empty boxes.
+> **EN.** On XeLaTeX the template watches the text as it is typeset and switches to Sarabun the instant a Thai character appears, then back to Fira Sans afterwards. Titles, headings, body text, bold, italic — all the same, no macro.
 >
-> ✅ `\begin{frame}{Results / \thaiinline{ผลลัพธ์}}`
-> ❌ `\begin{frame}{Results / ผลลัพธ์}`
+> Older slides that still use `\thaiinline{...}` or `\begin{thaipar}` keep working; both are now do-nothing wrappers.
 >
-> **TH — ข้อควรระวัง:** ภาษาไทยที่อยู่ใน**หัวเรื่องสไลด์**ต้องครอบด้วย `\thaiinline{}` เช่นกัน เพราะฟอนต์ที่ใช้ทำหัวเรื่องไม่มีตัวอักษรไทย ถ้าไม่ครอบจะแสดงเป็นกล่องสี่เหลี่ยมว่าง ๆ
+> **TH.** เมื่อสร้างไฟล์ด้วย XeLaTeX เทมเพลตจะคอยดูข้อความขณะจัดหน้า และสลับไปใช้ฟอนต์ Sarabun ทันทีที่เจอตัวอักษรไทย แล้วสลับกลับเป็น Fira Sans เมื่อจบ ใช้ได้เหมือนกันหมดทั้งหัวเรื่อง เนื้อหา ตัวหนา ตัวเอียง โดยไม่ต้องเรียกคำสั่งใด ๆ
+>
+> สไลด์เก่าที่ยังใช้ `\thaiinline{...}` หรือ `\begin{thaipar}` ยังใช้งานได้ตามปกติ ตอนนี้ทั้งสองอย่างไม่ทำอะไรแล้ว
+
+> **EN — if Thai comes out blank:** you are not on XeLaTeX. Check that line 1 of `main.tex` reads `% !TeX program = xelatex` and that `.latexmkrc` has `$pdf_mode = 5;`. A missing glyph prints *nothing* and warns about *nothing*, so a blank slide is the only symptom. Add `\tracinglostchars=3` to `main.tex` to turn every dropped character into a logged error.
+>
+> **TH — ถ้าภาษาไทยหายไปทั้งหมด:** แสดงว่าไม่ได้ใช้ XeLaTeX ให้ตรวจว่าบรรทัดแรกของ `main.tex` เป็น `% !TeX program = xelatex` และในไฟล์ `.latexmkrc` มี `$pdf_mode = 5;` ตัวอักษรที่ไม่มีในฟอนต์จะ*ไม่แสดงอะไรเลย*และ*ไม่เตือนอะไรเลย* อาการเดียวที่เห็นคือสไลด์ว่าง ถ้าต้องการให้ฟ้อง ให้เพิ่ม `\tracinglostchars=3` ใน `main.tex`
 
 ---
 
@@ -347,7 +310,7 @@ The word \thaiinline{ตัวอย่าง} means "example".
 
 The reason: Sarabun is a modern font file, and pdfLaTeX is old enough that it cannot read modern font files at all. So **if you want real Sarabun, the talk must be built with XeLaTeX.**
 
-If you created the deck with `-Thai` / `-t`, this is already set for you and you can ignore all of it. To switch it on by hand, open `decks/<your-talk>/.latexmkrc` and remove the `#` from this line:
+This is already set for you: `.latexmkrc` in this folder says `$pdf_mode = 5;` and line 1 of `main.tex` says `xelatex`. You only need to touch it to go the other way, for an English-only talk:
 
 **TH.** คอมพิวเตอร์แปลงข้อความของคุณเป็น PDF ได้สองวิธี เทมเพลตนี้รองรับทั้งสองแบบ และโดยปกติคุณไม่ต้องสนใจ แต่มีกรณีหนึ่งที่สำคัญ
 
@@ -358,7 +321,7 @@ If you created the deck with `-Thai` / `-t`, this is already set for you and you
 
 เหตุผลคือ Sarabun เป็นไฟล์ฟอนต์รูปแบบใหม่ ส่วน pdfLaTeX เป็นโปรแกรมรุ่นเก่าที่อ่านไฟล์ฟอนต์รูปแบบใหม่ไม่ได้เลย ดังนั้น **ถ้าต้องการ Sarabun จริง ๆ ต้องสร้างไฟล์ด้วย XeLaTeX**
 
-ถ้าคุณสร้างสไลด์ด้วยตัวเลือก `-Thai` หรือ `-t` ระบบตั้งค่านี้ให้แล้ว ไม่ต้องทำอะไรเพิ่ม ถ้าต้องการเปิดเอง ให้เปิดไฟล์ `decks/<ชื่อสไลด์>/.latexmkrc` แล้วลบเครื่องหมาย `#` ออกจากบรรทัดนี้
+ระบบตั้งค่านี้ให้แล้ว ไฟล์ `.latexmkrc` ในโฟลเดอร์นี้เขียนว่า `$pdf_mode = 5;` และบรรทัดแรกของ `main.tex` เขียนว่า `xelatex` จะต้องแก้ก็ต่อเมื่อจะทำสไลด์ภาษาอังกฤษล้วนเท่านั้น
 
 ```perl
 $pdf_mode = 5;
@@ -368,10 +331,10 @@ $pdf_mode = 5;
 **TH.** หรือจะสั่งใช้เฉพาะครั้งเดียวโดยไม่แก้ไฟล์ก็ได้
 
 ```powershell
-.\scripts\build.ps1 -Deck my-talk -Engine xe      # Windows
+.\scripts\build.ps1 -Engine xe                   # Windows
 ```
 ```bash
-./scripts/build.sh -d my-talk -e xe               # macOS / Linux
+./scripts/build.sh -e xe                          # macOS / Linux
 ```
 
 ---
@@ -438,7 +401,9 @@ Put the image in your deck's `figures/` folder.
 ## 12. Where everything lives / ไฟล์ต่าง ๆ อยู่ที่ไหน
 
 ```
-decks/          your talks — one folder each / สไลด์ของคุณ โฟลเดอร์ละหนึ่งเรื่อง
+main.tex        THIS presentation / ตัวสไลด์ชุดนี้
+sections/       your slides / สไลด์ของคุณ
+showcase/       worked example / ตัวอย่างที่ใช้งานได้จริง
   _template/    the blank starting point — do not edit / ต้นแบบเปล่า อย่าแก้ไข
   showcase/     the worked example / ตัวอย่างที่ทำเสร็จแล้ว
 theme/          colours, fonts, layout / สี ฟอนต์ การจัดวาง
@@ -462,12 +427,13 @@ build/          finished PDFs land here / ไฟล์ PDF ที่เสร็
 | What you see / อาการ | The cause / สาเหตุ |
 |---|---|
 | Build fails on a slide with code<br>สร้างไฟล์ไม่ผ่านที่สไลด์ซึ่งมีโค้ด | Missing `[fragile]`<br>ลืมใส่ `[fragile]` |
-| Thai shows as empty boxes □□□<br>ภาษาไทยขึ้นเป็นกล่องว่าง □□□ | Thai in a title without `\thaiinline{}`<br>ภาษาไทยในหัวเรื่องไม่ได้ครอบด้วย `\thaiinline{}` |
+| Thai is missing entirely — blank title, blank line<br>ภาษาไทยหายไปทั้งหมด หัวเรื่องว่าง บรรทัดว่าง | Not built with XeLaTeX. Set `% !TeX program = xelatex` and `$pdf_mode = 5;`<br>ไม่ได้สร้างด้วย XeLaTeX ให้ตั้ง `% !TeX program = xelatex` และ `$pdf_mode = 5;` |
+| Thai comes out as Latin gibberish `ćéĺďÇÒÁ`<br>ภาษาไทยกลายเป็นอักษรละตินมั่ว `ćéĺďÇÒÁ` | An old `main.aux` from a different engine. Delete `main.*` beside `main.tex`, or **Tools → Clean Auxiliary Files**<br>มีไฟล์ `main.aux` เก่าจากโปรแกรมอื่นค้างอยู่ ให้ลบไฟล์ `main.*` ที่อยู่ข้าง `main.tex` หรือใช้ **Tools → Clean Auxiliary Files** |
 | Thai looks wrong, not Sarabun<br>ภาษาไทยหน้าตาไม่เหมือน Sarabun | Built with pdfLaTeX — see section 9<br>สร้างด้วย pdfLaTeX ดูหัวข้อ 9 |
 | Slide numbers or citations wrong<br>เลขสไลด์หรือการอ้างอิงผิด | Build once more; they need two passes<br>สั่งสร้างอีกครั้ง ระบบต้องทำงานสองรอบ |
 | `Undefined control sequence \xpg@aux`<br>ขึ้นข้อความ `Undefined control sequence \xpg@aux` | Left-over files from a different mode — see the note below<br>มีไฟล์ค้างจากโหมดอื่น ดูหมายเหตุข้างล่าง |
 | Same error, but inside TeXstudio<br>ข้อผิดพลาดเดียวกัน แต่เกิดใน TeXstudio | You changed `% !TeX program` — run **Tools → Clean Auxiliary Files** once<br>คุณเปลี่ยนค่า `% !TeX program` ให้สั่ง **Tools → Clean Auxiliary Files** หนึ่งครั้ง |
-| `File 'beamerthemedeck.sty' not found`<br>ขึ้นว่าหาไฟล์ `beamerthemedeck.sty` ไม่เจอ | The deck was moved out of `decks/` — use `export-deck`, see section 6<br>สไลด์ถูกย้ายออกจาก `decks/` ให้ใช้ `export-deck` ดูหัวข้อ 6 |
+| `Cannot find theme/beamerthemedeck.sty`<br>ขึ้นว่าหาไฟล์ `theme/beamerthemedeck.sty` ไม่เจอ | The deck was moved somewhere with no `theme/` at or above it. Copy `theme/` and `preamble/` in beside `main.tex` — section 6C<br>สไลด์ถูกย้ายไปที่ที่ไม่มี `theme/` อยู่ในระดับเดียวกันหรือเหนือขึ้นไป ให้คัดลอก `theme/` กับ `preamble/` มาวางข้าง `main.tex` ดูหัวข้อ 6C |
 | Nothing makes sense any more<br>อะไร ๆ ก็ผิดไปหมด | Clean and rebuild (below)<br>ล้างไฟล์แล้วสร้างใหม่ (ข้างล่าง) |
 
 > **EN — switching between the two modes.** The two modes leave behind working
@@ -493,9 +459,9 @@ build/          finished PDFs land here / ไฟล์ PDF ที่เสร็
 ./scripts/clean.sh           # macOS / Linux
 ```
 
-**EN.** If it still fails, open `decks/<your-talk>/out/main.log` and search for a line starting with `!`. That is the real error; everything after it is usually noise caused by the first one.
+**EN.** If it still fails, open `out/main.log` and search for a line starting with `!`. That is the real error; everything after it is usually noise caused by the first one.
 
-**TH.** ถ้ายังไม่หาย ให้เปิดไฟล์ `decks/<ชื่อสไลด์>/out/main.log` แล้วค้นหาบรรทัดที่ขึ้นต้นด้วย `!` บรรทัดนั้นคือข้อผิดพลาดจริง ส่วนที่ตามมามักเป็นผลพวงจากข้อแรกเท่านั้น
+**TH.** ถ้ายังไม่หาย ให้เปิดไฟล์ `out/main.log` แล้วค้นหาบรรทัดที่ขึ้นต้นด้วย `!` บรรทัดนั้นคือข้อผิดพลาดจริง ส่วนที่ตามมามักเป็นผลพวงจากข้อแรกเท่านั้น
 
 ---
 
@@ -507,10 +473,8 @@ build/          finished PDFs land here / ไฟล์ PDF ที่เสร็
 | Build all / สร้างทั้งหมด | `.\scripts\build.ps1` | `./scripts/build.sh` |
 | Rebuild on save / สร้างใหม่ทุกครั้งที่บันทึก | `.\scripts\build.ps1 -Deck NAME -Watch` | `./scripts/build.sh -d NAME -w` |
 | Force XeLaTeX / บังคับใช้ XeLaTeX | `.\scripts\build.ps1 -Deck NAME -Engine xe` | `./scripts/build.sh -d NAME -e xe` |
-| New talk / สร้างเรื่องใหม่ | `.\scripts\new-deck.ps1 -Name NAME` | `./scripts/new-deck.sh -n NAME` |
-| New Thai talk / สร้างเรื่องใหม่ภาษาไทย | `.\scripts\new-deck.ps1 -Name NAME -Thai` | `./scripts/new-deck.sh -n NAME -t` |
-| Pack a talk to send / รวมสไลด์เพื่อส่งต่อ | `.\scripts\export-deck.ps1 -Deck NAME` | `./scripts/export-deck.sh -d NAME` |
-| …as a zip / …เป็นไฟล์ zip | `.\scripts\export-deck.ps1 -Deck NAME -Zip` | `./scripts/export-deck.sh -d NAME -z` |
+| New talk / สร้างเรื่องใหม่ | copy this whole folder and rename it / คัดลอกโฟลเดอร์นี้ทั้งหมดแล้วเปลี่ยนชื่อ | ← same / เหมือนกัน |
+| Pack a talk to send / รวมสไลด์เพื่อส่งต่อ | copy the folder, drop `theme/` + `preamble/` in beside `main.tex` — no script<br>คัดลอกโฟลเดอร์ แล้ววาง `theme/` กับ `preamble/` ข้าง `main.tex` ไม่ต้องใช้สคริปต์ | ← same / เหมือนกัน |
 | Clean up / ล้างไฟล์ | `.\scripts\clean.ps1` | `./scripts/clean.sh` |
 
 **EN.** Or skip all of it: open `main.tex` in **TeXstudio** and press build — see section 4. In VS Code you can press `Ctrl+Shift+B` (`Cmd+Shift+B` on Mac) to build the talk you are currently editing.

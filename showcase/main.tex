@@ -1,4 +1,4 @@
-% !TeX program = pdflatex
+% !TeX program = xelatex
 % !BIB program = biber
 % !TeX encoding = UTF-8
 % ============================================================================
@@ -15,11 +15,26 @@
 
 \documentclass[dvipsnames,10pt,aspectratio=169]{beamer}
 
-% Teach LaTeX where theme/ and preamble/ are, so a bare `pdflatex main.tex`
-% works without TEXINPUTS. See decks/_template/main.tex for the full comment.
-\providecommand{\deckroot}{../../}
+% Find the folder holding theme/ and preamble/ by searching upward, so this
+% deck builds wherever it is copied to. See decks/_template/main.tex for the
+% full explanation.
 \makeatletter
-  \edef\input@path{{\deckroot theme/}{\deckroot preamble/}}
+\def\deck@probe#1{%
+  \ifx\deckroot\@undefined
+    \IfFileExists{#1theme/beamerthemedeck.sty}{\xdef\deckroot{#1}}{}%
+  \fi
+}
+\deck@probe{}
+\deck@probe{../}
+\deck@probe{../../}
+\deck@probe{../../../}
+\ifx\deckroot\@undefined
+  \PackageError{deck}{Cannot find theme/beamerthemedeck.sty}{%
+    Searched ./ ../ ../../ and ../../../ from this file.^^J%
+    This deck needs the theme/ and preamble/ folders somewhere at or above
+    it. Copy them next to main.tex, or copy the whole repo.}%
+\fi
+\edef\input@path{{\deckroot theme/}{\deckroot preamble/}}
 \makeatother
 
 \usetheme{deck}

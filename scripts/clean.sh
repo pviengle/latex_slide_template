@@ -21,7 +21,15 @@ done
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
-for d in "$REPO_ROOT"/decks/*/; do
+# The root folder is the presentation; subfolders with their own main.tex are
+# extra decks kept beside it.
+DIRS=("$REPO_ROOT")
+for d in "$REPO_ROOT"/*/; do
+  case "$(basename "$d")" in build|out|scripts|theme|preamble|figures|sections) continue ;; esac
+  [ -f "$d/main.tex" ] && DIRS+=("${d%/}")
+done
+
+for d in "${DIRS[@]}"; do
   [ -f "$d/main.tex" ] || continue
   name="$(basename "$d")"
   pushd "$d" >/dev/null

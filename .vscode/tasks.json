@@ -2,45 +2,46 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Build this deck",
-      "detail": "Build the deck containing the file you are editing",
-      "type": "shell",
-      "windows": { "command": "powershell", "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}/scripts/build.ps1", "-Deck", "${relativeFileDirname}"] },
-      "osx":     { "command": "bash", "args": ["${workspaceFolder}/scripts/build.sh", "-d", "${relativeFileDirname}"] },
-      "linux":   { "command": "bash", "args": ["${workspaceFolder}/scripts/build.sh", "-d", "${relativeFileDirname}"] },
-      "options": { "cwd": "${workspaceFolder}" },
-      "group": { "kind": "build", "isDefault": true },
-      "problemMatcher": []
-    },
-    {
-      "label": "Build all decks",
+      "label": "Build this presentation",
+      "detail": "Build main.tex in the repo root",
       "type": "shell",
       "windows": { "command": "powershell", "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}/scripts/build.ps1"] },
       "osx":     { "command": "bash", "args": ["${workspaceFolder}/scripts/build.sh"] },
       "linux":   { "command": "bash", "args": ["${workspaceFolder}/scripts/build.sh"] },
       "options": { "cwd": "${workspaceFolder}" },
-      "group": "build",
+      "group": { "kind": "build", "isDefault": true },
       "problemMatcher": []
     },
     {
-      "label": "Build this deck (XeLaTeX)",
-      "detail": "Force XeLaTeX - needed for real Sarabun in Thai decks",
+      "label": "Build everything",
+      "detail": "This presentation plus any deck in a subfolder (showcase)",
       "type": "shell",
-      "windows": { "command": "powershell", "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}/scripts/build.ps1", "-Deck", "${relativeFileDirname}", "-Engine", "xe"] },
-      "osx":     { "command": "bash", "args": ["${workspaceFolder}/scripts/build.sh", "-d", "${relativeFileDirname}", "-e", "xe"] },
-      "linux":   { "command": "bash", "args": ["${workspaceFolder}/scripts/build.sh", "-d", "${relativeFileDirname}", "-e", "xe"] },
+      "windows": { "command": "powershell", "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}/scripts/build.ps1", "-All"] },
+      "osx":     { "command": "bash", "args": ["${workspaceFolder}/scripts/build.sh", "-a"] },
+      "linux":   { "command": "bash", "args": ["${workspaceFolder}/scripts/build.sh", "-a"] },
       "options": { "cwd": "${workspaceFolder}" },
       "group": "build",
       "problemMatcher": []
     },
     {
-      "label": "Watch this deck",
+      "label": "Build with pdfLaTeX (faster, no Thai)",
+      "detail": "Force pdfLaTeX. Thai falls back to Garuda for the whole deck.",
+      "type": "shell",
+      "windows": { "command": "powershell", "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}/scripts/build.ps1", "-Engine", "pdf"] },
+      "osx":     { "command": "bash", "args": ["${workspaceFolder}/scripts/build.sh", "-e", "pdf"] },
+      "linux":   { "command": "bash", "args": ["${workspaceFolder}/scripts/build.sh", "-e", "pdf"] },
+      "options": { "cwd": "${workspaceFolder}" },
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Watch",
       "detail": "Rebuild automatically on every save (Ctrl+C to stop)",
       "type": "shell",
       "isBackground": true,
-      "windows": { "command": "powershell", "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}/scripts/build.ps1", "-Deck", "${relativeFileDirname}", "-Watch"] },
-      "osx":     { "command": "bash", "args": ["${workspaceFolder}/scripts/build.sh", "-d", "${relativeFileDirname}", "-w"] },
-      "linux":   { "command": "bash", "args": ["${workspaceFolder}/scripts/build.sh", "-d", "${relativeFileDirname}", "-w"] },
+      "windows": { "command": "powershell", "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}/scripts/build.ps1", "-Watch"] },
+      "osx":     { "command": "bash", "args": ["${workspaceFolder}/scripts/build.sh", "-w"] },
+      "linux":   { "command": "bash", "args": ["${workspaceFolder}/scripts/build.sh", "-w"] },
       "options": { "cwd": "${workspaceFolder}" },
       "problemMatcher": []
     },
@@ -52,33 +53,6 @@
       "linux":   { "command": "bash", "args": ["${workspaceFolder}/scripts/clean.sh"] },
       "options": { "cwd": "${workspaceFolder}" },
       "problemMatcher": []
-    },
-    {
-      "label": "New deck",
-      "detail": "Prompts for a name, then scaffolds decks/<name>",
-      "type": "shell",
-      "windows": { "command": "powershell", "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}/scripts/new-deck.ps1", "-Name", "${input:deckName}"] },
-      "osx":     { "command": "bash", "args": ["${workspaceFolder}/scripts/new-deck.sh", "-n", "${input:deckName}"] },
-      "linux":   { "command": "bash", "args": ["${workspaceFolder}/scripts/new-deck.sh", "-n", "${input:deckName}"] },
-      "options": { "cwd": "${workspaceFolder}" },
-      "problemMatcher": []
-    },
-    {
-      "label": "Export this deck (standalone)",
-      "detail": "Bundle the deck you are editing, with theme and fonts, into export/<name>",
-      "type": "shell",
-      "windows": { "command": "powershell", "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}/scripts/export-deck.ps1", "-Deck", "${relativeFileDirname}", "-Force"] },
-      "osx":     { "command": "bash", "args": ["${workspaceFolder}/scripts/export-deck.sh", "-d", "${relativeFileDirname}", "-f"] },
-      "linux":   { "command": "bash", "args": ["${workspaceFolder}/scripts/export-deck.sh", "-d", "${relativeFileDirname}", "-f"] },
-      "options": { "cwd": "${workspaceFolder}" },
-      "problemMatcher": []
-    }
-  ],
-  "inputs": [
-    {
-      "id": "deckName",
-      "type": "promptString",
-      "description": "Folder name for the new deck (e.g. jcsse-2026)"
     }
   ]
 }

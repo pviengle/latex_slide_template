@@ -1,16 +1,25 @@
-% !TeX program = pdflatex
+% !TeX program = xelatex
 % !BIB program = biber
 % !TeX encoding = UTF-8
 % ============================================================================
-%  main.tex  --  the deck
+%  main.tex  --  THIS PRESENTATION
 % ----------------------------------------------------------------------------
+%  This file is the presentation. One copy of this repo = one talk.
+%
+%  To start a new talk: copy this whole folder, rename it, and edit
+%  metadata.tex and sections/. Nothing inside needs repointing.
+%
 %  Build it, whichever you prefer:
 %     TeXstudio / TeXworks / Overleaf   just press the green build button
 %     terminal, from this folder        latexmk
-%     terminal, from the repo root      .\scripts\build.ps1 -Deck <foldername>
+%     terminal, from this folder        .\scripts\build.ps1     (or build.sh)
 %
 %  The three "% !TeX" lines above tell TeXstudio which engine and which
-%  bibliography tool this deck wants. Leave them at the top of the file.
+%  bibliography tool to use. Leave them at the top of the file.
+%
+%  Engine is XeLaTeX because Thai is switched on below. If your talk has no
+%  Thai in it at all, you can change line 1 to `pdflatex` and set
+%  $pdf_mode = 1 in .latexmkrc for a slightly faster build.
 % ============================================================================
 
 \documentclass[dvipsnames,10pt,aspectratio=169]{beamer}
@@ -21,21 +30,39 @@
 %                                    (RoyalBlue, BrickRed, ForestGreen, ...)
 
 % ---------------------------------------------------------------------------
-%  WHERE THE SHARED FILES LIVE
+%  WHERE THE SHARED FILES LIVE  --  nothing to edit here, ever
 %
-%  \deckroot is the way back from this file to the folder that holds theme/
-%  and preamble/. The two lines after it tell LaTeX to look in those folders,
-%  which is what makes a plain `pdflatex main.tex` work -- no editor setup, no
-%  environment variables, no build script required.
+%  This searches upward for the folder holding theme/ and preamble/: first
+%  beside this file, then one, two and three levels up. The first folder that
+%  actually contains theme/beamerthemedeck.sty wins, and \deckroot is set to
+%  it. Everything else in the deck is relative to \deckroot.
 %
-%  If you move this deck, this ONE line is the only thing to change:
-%     ../../     deck sits in decks/<name>/   <- the normal case
-%     (empty)    deck carries its own copy of theme/ and preamble/ beside it
-%                (that is what scripts/export-deck produces)
+%  That search is what makes this folder copyable. All of these build as-is:
+%     copy the whole repo    main.tex sits beside theme/          -> ./
+%     drop it into a project one folder deeper                    -> ../
+%     keep a second talk in a subfolder of this one               -> ../
+%
+%  No path to edit, no environment variable, no build script, no export step.
+%  If nothing is found it stops immediately with a message saying so, instead
+%  of failing later with a confusing "file not found".
 % ---------------------------------------------------------------------------
-\providecommand{\deckroot}{../../}
 \makeatletter
-  \edef\input@path{{\deckroot theme/}{\deckroot preamble/}}
+\def\deck@probe#1{%
+  \ifx\deckroot\@undefined
+    \IfFileExists{#1theme/beamerthemedeck.sty}{\xdef\deckroot{#1}}{}%
+  \fi
+}
+\deck@probe{}
+\deck@probe{../}
+\deck@probe{../../}
+\deck@probe{../../../}
+\ifx\deckroot\@undefined
+  \PackageError{deck}{Cannot find theme/beamerthemedeck.sty}{%
+    Searched ./ ../ ../../ and ../../../ from this file.^^J%
+    This deck needs the theme/ and preamble/ folders somewhere at or above
+    it. Copy them next to main.tex, or copy the whole repo.}%
+\fi
+\edef\input@path{{\deckroot theme/}{\deckroot preamble/}}
 \makeatother
 
 % --- Theme -----------------------------------------------------------------
@@ -51,8 +78,12 @@
 \input{macros}    % your own shortcuts
 
 % --- Thai ------------------------------------------------------------------
-%  Uncomment BOTH the line below and the xelatex line in .latexmkrc.
-% \input{lang-thai}
+%  On, because this template is used for Thai talks. Type Thai anywhere --
+%  titles, headings, body -- with no wrapping macro. Needs XeLaTeX, which
+%  line 1 and .latexmkrc already select.
+%
+%  Delete this line if the talk is English-only; it saves a little build time.
+\input{lang-thai}
 
 % --- Bibliography ----------------------------------------------------------
 %  Uncomment if this deck cites anything.

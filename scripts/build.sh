@@ -1,31 +1,37 @@
 #!/usr/bin/env bash
 # ============================================================================
-#  build.sh  --  build one deck, or every deck, and collect PDFs into build/
+#  build.sh  --  build this presentation
 # ----------------------------------------------------------------------------
 #  macOS / Linux. Windows users: use scripts\build.ps1 instead (same options).
 #
+#  main.tex in the repo root IS the presentation. One copy of this repo is one
+#  talk, so with no arguments this builds that.
+#
 #  Usage:
-#     ./scripts/build.sh                      build every deck
-#     ./scripts/build.sh -d showcase          build one deck
-#     ./scripts/build.sh -d showcase -e xe    force xelatex
-#     ./scripts/build.sh -d showcase -w       rebuild on every save
+#     ./scripts/build.sh                      build this presentation
+#     ./scripts/build.sh -e xe                force xelatex
+#     ./scripts/build.sh -w                   rebuild on every save
 #     ./scripts/build.sh -c                   clean intermediates first
+#     ./scripts/build.sh -d showcase          build a deck in a subfolder
+#     ./scripts/build.sh -a                   build this one and every subfolder
 # ============================================================================
 set -euo pipefail
 
-DECK="all"
+DECK=""
 ENGINE="default"
 WATCH=0
 CLEAN=0
+ALL=0
 
-usage() { sed -n '2,15p' "$0" | sed 's/^# \{0,1\}//'; exit 0; }
+usage() { sed -n '2,18p' "$0" | sed 's/^# \{0,1\}//'; exit 0; }
 
-while getopts ":d:e:wch" opt; do
+while getopts ":d:e:wcah" opt; do
   case "$opt" in
     d) DECK="$OPTARG" ;;
     e) ENGINE="$OPTARG" ;;
     w) WATCH=1 ;;
     c) CLEAN=1 ;;
+    a) ALL=1 ;;
     h) usage ;;
     \?) echo "Unknown option -$OPTARG" >&2; exit 2 ;;
     :)  echo "Option -$OPTARG needs a value" >&2; exit 2 ;;
@@ -33,12 +39,11 @@ while getopts ":d:e:wch" opt; do
 done
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-DECKS_DIR="$REPO_ROOT/decks"
 BUILD_DIR="$REPO_ROOT/build"
 mkdir -p "$BUILD_DIR"
 
 # 'default' passes no flag, so the deck's own .latexmkrc decides the engine --
-# which is how Thai decks select xelatex.
+# which is how the Thai setup selects xelatex.
 case "$ENGINE" in
   pdf)     ENGINE_FLAG="-pdf" ;;
   xe)      ENGINE_FLAG="-xelatex" ;;
@@ -47,41 +52,37 @@ case "$ENGINE" in
   *) echo "Unknown engine '$ENGINE' (use pdf, xe or lua)" >&2; exit 2 ;;
 esac
 
-# Accept the deck as a bare name or as a path, and reduce it to the name:
-#   showcase  decks/showcase  decks/showcase/sections  ->  showcase
-# VS Code's ${relativeFileDirname} hands us the last of those, and tab
-# completion in a shell produces the middle one.
-if [ "$DECK" != "all" ]; then
-  DECK="${DECK//\\//}"      # accept backslashes too
-  DECK="${DECK#./}"
-  DECK="${DECK#decks/}"
-  DECK="${DECK%%/*}"
-fi
-
-# Which decks? Anything with a main.tex, skipping the _template scaffold.
+# --- Which folders? ---------------------------------------------------------
+#  The root folder is the presentation. Subfolders holding their own main.tex
+#  are extra decks kept alongside it (showcase is one).
 TARGETS=()
-if [ "$DECK" = "all" ]; then
-  for d in "$DECKS_DIR"/*/; do
-    name="$(basename "$d")"
-    [ "$name" = "_template" ] && continue
-    [ -f "$d/main.tex" ] && TARGETS+=("$d")
-  done
-else
-  if [ ! -f "$DECKS_DIR/$DECK/main.tex" ]; then
-    echo "No deck named '$DECK' (looked for $DECKS_DIR/$DECK/main.tex)" >&2
+if [ -n "$DECK" ]; then
+  DECK="${DECK//\\//}"; DECK="${DECK#./}"; DECK="${DECK%%/*}"
+  if [ ! -f "$REPO_ROOT/$DECK/main.tex" ]; then
+    echo "No deck named '$DECK' (looked for $REPO_ROOT/$DECK/main.tex)" >&2
     exit 1
   fi
-  TARGETS+=("$DECKS_DIR/$DECK/")
-fi
-
-if [ ${#TARGETS[@]} -eq 0 ]; then
-  echo "No decks found in $DECKS_DIR" >&2
-  exit 0
+  TARGETS+=("$REPO_ROOT/$DECK")
+elif [ "$ALL" -eq 1 ]; then
+  TARGETS+=("$REPO_ROOT")
+  for d in "$REPO_ROOT"/*/; do
+    name="$(basename "$d")"
+    case "$name" in build|out|scripts|theme|preamble|figures|sections) continue ;; esac
+    [ -f "$d/main.tex" ] && TARGETS+=("${d%/}")
+  done
+else
+  if [ ! -f "$REPO_ROOT/main.tex" ]; then
+    echo "No main.tex in $REPO_ROOT -- is this the right folder?" >&2
+    exit 1
+  fi
+  TARGETS+=("$REPO_ROOT")
 fi
 
 FAILED=()
 
 for target in "${TARGETS[@]}"; do
+  # The root deck is named after the folder the repo was copied to, so a copy
+  # called opdc-5stars/ produces build/opdc-5stars.pdf.
   name="$(basename "$target")"
   echo
   echo "==> $name"
@@ -91,13 +92,9 @@ for target in "${TARGETS[@]}"; do
   [ "$CLEAN" -eq 1 ] && latexmk -C >/dev/null 2>&1 || true
 
   # --- Engine-change guard --------------------------------------------------
-  #  XeLaTeX and LuaLaTeX write polyglossia macros such as \xpg@aux into the
-  #  .aux file. pdfLaTeX does not load polyglossia, so reading a stale .aux
-  #  left by another engine kills the build with
-  #  "Undefined control sequence \xpg@aux".
-  #
-  #  So: remember which engine produced the current out/ folder, and wipe it
-  #  whenever the engine changes.
+  #  Remember which engine produced the current out/ folder and wipe it when
+  #  the engine changes: intermediates written by one engine are not readable
+  #  by another.
   engine_label="$ENGINE"
   if [ "$engine_label" = "default" ]; then
     engine_label="pdf"
@@ -116,10 +113,9 @@ for target in "${TARGETS[@]}"; do
   #  TeXstudio (and TeXworks, TeXShop, ...) build in place, leaving main.aux
   #  next to main.tex. latexmk keeps its own copy in out/, so a top-level
   #  main.aux is never ours -- but TeX still finds it on the search path, and
-  #  a pdflatex run chokes on one that xelatex wrote (it holds \xpg@aux).
-  #  The engine stamp above cannot see these, so clear them separately.
-  #  main.pdf, main.log and main.synctex.gz are left alone: harmless, and the
-  #  PDF is the one the editor is showing.
+  #  one written by a different engine breaks the build. main.pdf, main.log
+  #  and main.synctex.gz are left alone: harmless, and the PDF is the one the
+  #  editor is showing.
   stray=""
   for ext in aux bbl bcf run.xml toc nav snm out vrb; do
     [ -f "main.$ext" ] && stray="$stray main.$ext"
@@ -141,7 +137,7 @@ for target in "${TARGETS[@]}"; do
       echo "    OK -> build/$name.pdf"
     fi
   else
-    echo "    FAILED - see decks/$name/out/main.log" >&2
+    echo "    FAILED - see $name/out/main.log" >&2
     FAILED+=("$name")
   fi
 
@@ -153,4 +149,4 @@ if [ ${#FAILED[@]} -gt 0 ]; then
   echo "Failed: ${FAILED[*]}" >&2
   exit 1
 fi
-echo "All decks built."
+echo "Done."
