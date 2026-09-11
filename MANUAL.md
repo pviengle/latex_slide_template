@@ -239,6 +239,7 @@ your-talk/
 | Grey, played-down text | `\muted{minor detail}` |
 | A red warning word | `\alert{careful}` |
 | Two columns | `\twocol{left side}{right side}` |
+| Two columns, centred against each other top-to-bottom | `\twocolc{left side}{right side}` |
 | A slide with one big sentence | `\statementframe{The main result}` |
 | A boxed statement | `\begin{block}{Title} ... \end{block}` |
 | Points appearing one at a time | `\item<1->` `\item<2->` `\item<3->` |
@@ -252,6 +253,7 @@ your-talk/
 | ข้อความสีเทา ลดความเด่น | `\muted{รายละเอียดย่อย}` |
 | คำเตือนสีแดง | `\alert{ระวัง}` |
 | แบ่งสองคอลัมน์ | `\twocol{ฝั่งซ้าย}{ฝั่งขวา}` |
+| สองคอลัมน์ จัดกึ่งกลางแนวตั้งให้ตรงกัน | `\twocolc{ฝั่งซ้าย}{ฝั่งขวา}` |
 | สไลด์ประโยคเดียวตัวใหญ่ | `\statementframe{ผลลัพธ์หลัก}` |
 | ข้อความในกรอบ | `\begin{block}{หัวข้อ} ... \end{block}` |
 | ให้หัวข้อทยอยขึ้นทีละข้อ | `\item<1->` `\item<2->` `\item<3->` |
@@ -343,21 +345,34 @@ $pdf_mode = 5;
 
 ### Colours / สี
 
-**EN.** All colours come from **one block of seven lines**. Open `theme/beamercolorthemedeck.sty` and look for the box marked `BRAND PALETTE`. Change the colour codes there and the whole presentation changes to match. You do not need to edit anything else.
+**EN.** All colours come from **one block**. Open `theme/beamercolorthemedeck.sty` and look for the box marked `BRAND PALETTE`. Change the colour codes there and the whole presentation changes to match. You do not need to edit anything else.
 
-**TH.** สีทั้งหมดมาจาก**บล็อกเดียวจำนวนเจ็ดบรรทัด** เปิดไฟล์ `theme/beamercolorthemedeck.sty` แล้วมองหากรอบที่เขียนว่า `BRAND PALETTE` เปลี่ยนรหัสสีตรงนั้น แล้วทั้งงานนำเสนอจะเปลี่ยนตามทันที ไม่ต้องแก้ไฟล์อื่นเลย
+**TH.** สีทั้งหมดมาจาก**บล็อกเดียว** เปิดไฟล์ `theme/beamercolorthemedeck.sty` แล้วมองหากรอบที่เขียนว่า `BRAND PALETTE` เปลี่ยนรหัสสีตรงนั้น แล้วทั้งงานนำเสนอจะเปลี่ยนตามทันที ไม่ต้องแก้ไฟล์อื่นเลย
 
 ```latex
-\definecolor{BrandPrimary}{HTML}{14375A}   % headings / หัวเรื่อง
-\definecolor{BrandAccent} {HTML}{2E9E8F}   % highlights / จุดเน้น
+\definecolor{BrandPrimary}{HTML}{1A1A1A}   % headings, near-black / หัวเรื่อง สีเกือบดำ
+\definecolor{BrandAccent} {HTML}{FF4611}   % orange: cover, bars, bullets, blocks / สีส้ม: หน้าปก แถบ หัวข้อย่อย กรอบ
 \definecolor{BrandAlert}  {HTML}{C4453B}   % warnings / คำเตือน
 ```
 
+**EN.** The same box holds two more groups. `BrandGold` and `BrandStripGray` are the lower two segments of the strip down the right edge of each slide; the top segment is `BrandAccent`. The eight `OkabeIto...` colours are a set that stays distinguishable for colour-blind viewers, meant for charts and diagrams: `OkabeItoOrange`, `OkabeItoSkyBlue`, `OkabeItoBluishGreen`, `OkabeItoYellow`, `OkabeItoBlue`, `OkabeItoVermilion`, `OkabeItoReddishPurple`, `OkabeItoBlack`. Use them like any other colour — `\textcolor{OkabeItoBlue}{...}`, or `fill=OkabeItoOrange` in a diagram.
+
+**TH.** ในกรอบเดียวกันมีสีอีกสองกลุ่ม `BrandGold` และ `BrandStripGray` คือสองท่อนล่างของแถบสีที่ขอบขวาของทุกสไลด์ ส่วนท่อนบนคือ `BrandAccent` สีกลุ่ม `OkabeIto...` ทั้งแปดสีเป็นชุดสีที่ผู้มีภาวะตาบอดสียังแยกออกจากกันได้ เหมาะกับกราฟและแผนภาพ ได้แก่ `OkabeItoOrange` `OkabeItoSkyBlue` `OkabeItoBluishGreen` `OkabeItoYellow` `OkabeItoBlue` `OkabeItoVermilion` `OkabeItoReddishPurple` `OkabeItoBlack` ใช้เหมือนสีอื่นทั่วไป เช่น `\textcolor{OkabeItoBlue}{...}` หรือ `fill=OkabeItoOrange` ในแผนภาพ
+
 ### Logo / โลโก้
 
-**EN.** Put your logo file in `theme/assets/`, then in your `metadata.tex` remove the `%` from the last line and point it at your file.
+**EN.** There are two places for a logo, and both stay empty until you set them. Put your logo file in `figures/` or `theme/assets/` — then the bare file name is enough — and in your `metadata.tex` remove the `%` from the logo lines and point them at your file.
 
-**TH.** วางไฟล์โลโก้ไว้ที่ `theme/assets/` แล้วในไฟล์ `metadata.tex` ให้ลบเครื่องหมาย `%` ออกจากบรรทัดสุดท้าย และแก้ให้ชี้ไปที่ไฟล์ของคุณ
+**TH.** โลโก้ใส่ได้สองตำแหน่ง และจะว่างไว้จนกว่าคุณจะตั้งค่า วางไฟล์โลโก้ไว้ใน `figures/` หรือ `theme/assets/` แล้วพิมพ์แค่ชื่อไฟล์ก็พอ จากนั้นในไฟล์ `metadata.tex` ให้ลบเครื่องหมาย `%` ออกจากบรรทัดโลโก้ และแก้ให้ชี้ไปที่ไฟล์ของคุณ
+
+```latex
+\decklogo{\includegraphics[height=6mm]{mylogo.pdf}}        % title slide / หน้าปก
+\deckfooterlogo{\includegraphics[height=5mm]{mylogo.pdf}}  % every slide / ทุกสไลด์
+```
+
+**EN.** The title-slide logo sits bottom right, in the white band along the bottom of the orange cover. That band is 9 mm tall, so keep the logo shorter than that. The footer logo sits between the author's name and the slide number.
+
+**TH.** โลโก้หน้าปกอยู่มุมขวาล่าง ในแถบสีขาวด้านล่างของหน้าปกสีส้ม แถบนี้สูง 9 มม. จึงควรให้โลโก้เตี้ยกว่านั้น ส่วนโลโก้ในแถบท้ายจะอยู่ระหว่างชื่อผู้นำเสนอกับเลขสไลด์
 
 ### Turning things off / การปิดส่วนต่าง ๆ
 
@@ -365,6 +380,37 @@ $pdf_mode = 5;
 \usetheme[noprogressbar]{deck}   % hide the bar along the bottom / ซ่อนแถบด้านล่าง
 \usetheme[nofooter]{deck}        % hide the footer entirely / ซ่อนแถบท้ายทั้งหมด
 ```
+
+### Spacing / ระยะห่าง
+
+**EN.** If the text on a slide sits too far below the header, the reason is almost always the **first letter of the `\documentclass` line**:
+
+**TH.** ถ้าข้อความในสไลด์อยู่ต่ำกว่าหัวเรื่องมากเกินไป สาเหตุมักอยู่ที่ **ตัวอักษรตัวแรกในบรรทัด `\documentclass`**
+
+```latex
+\documentclass[t,dvipsnames,10pt,aspectratio=169]{beamer}
+%              ^
+%              t  = content starts at the TOP     / เนื้อหาเริ่มจากด้านบน
+%              c  = beamer centres it vertically  / จัดกึ่งกลางแนวตั้ง
+```
+
+**EN.** `t` is the default in this template. Without it, a slide holding three bullets pushes them halfway down the page. Write `\begin{frame}[c]` on any single slide that you do want centred.
+
+**TH.** เทมเพลตนี้ใช้ `t` เป็นค่าเริ่มต้น ถ้าไม่มี สไลด์ที่มีข้อความสามบรรทัดจะถูกดันลงไปกลางหน้า ถ้าต้องการให้สไลด์ใดสไลด์หนึ่งจัดกึ่งกลาง ให้เขียน `\begin{frame}[c]` เฉพาะสไลด์นั้น
+
+**EN.** Three more dials, all in the tuning block near the top of `main.tex`. The values shown are the defaults:
+
+**TH.** มีอีกสามค่าที่ปรับได้ อยู่ในบล็อกปรับแต่งด้านบนของไฟล์ `main.tex` ค่าที่แสดงคือค่าเริ่มต้น
+
+```latex
+\decktitlegap{1.2ex}          % gap under the slide title / ระยะใต้หัวเรื่องสไลด์
+\decklinespread{1.25}         % line spacing / ระยะห่างระหว่างบรรทัด
+\setlength{\parskip}{0.5em}   % gap between paragraphs / ระยะห่างระหว่างย่อหน้า
+```
+
+**EN.** `\decklinespread` is the one to be careful with. Thai stacks a vowel and a tone mark above the letter and hangs vowels below it, and 1.25 is what keeps those clear of the line above. Below about 1.15 they start to touch. On a deck with no Thai in it, 1.15 is fine and lifts every slide a little.
+
+**TH.** `\decklinespread` คือค่าที่ต้องระวัง ภาษาไทยมีสระบนและวรรณยุกต์ซ้อนกันเหนือพยัญชนะ และมีสระล่างอยู่ใต้พยัญชนะ ค่า 1.25 คือค่าที่ทำให้ไม่ชนกับบรรทัดบน ถ้าต่ำกว่าประมาณ 1.15 จะเริ่มชนกัน ถ้าสไลด์ไม่มีภาษาไทยเลย ใช้ 1.15 ได้ และจะทำให้ทุกสไลด์ขยับขึ้นเล็กน้อย
 
 ---
 
@@ -382,6 +428,24 @@ $pdf_mode = 5;
 | `\input{lang-thai}` | Thai text / ข้อความภาษาไทย |
 | `\input{bib}` | Citations and a reference list / การอ้างอิงและรายการเอกสารอ้างอิง |
 
+**EN.** Equations use the same font as a LaTeX paper (Computer Modern), whichever engine you build with. Words you put inside an equation with `\text{...}` use the slide's own font instead, so `$x = 1 \text{ if } y > 0$` has *x* and *y* in the paper font and "if" matching the slide — and Thai inside `\text{...}` works.
+
+**TH.** สมการใช้ฟอนต์เดียวกับบทความ LaTeX (Computer Modern) ไม่ว่าจะสร้างไฟล์ด้วยโปรแกรมใด ส่วนคำที่พิมพ์ในสมการด้วย `\text{...}` จะใช้ฟอนต์ของสไลด์ เช่น `$x = 1 \text{ ถ้า } y > 0$` ตัวแปร *x* และ *y* จะเป็นฟอนต์แบบบทความ ส่วนคำว่า "ถ้า" จะเป็นฟอนต์เดียวกับสไลด์ และพิมพ์ภาษาไทยใน `\text{...}` ได้
+
+**EN.** A few more things come with those lines. `\input{code}` knows SPARQL as well as the usual languages: `\begin{lstlisting}[language=SPARQL]`. `\input{figures}` adds arrow-shaped boxes (`single arrow`) and grids of boxes (`matrix of nodes`). On a slide, a grid needs `ampersand replacement=\&` in its options and `\&` between cells — a plain `&` breaks, because the slide reads its whole body in one go.
+
+**TH.** บรรทัดเหล่านั้นให้ความสามารถเพิ่มอีกเล็กน้อย `\input{code}` รู้จักภาษา SPARQL นอกจากภาษาทั่วไป เขียนว่า `\begin{lstlisting}[language=SPARQL]` ส่วน `\input{figures}` เพิ่มกล่องรูปลูกศร (`single arrow`) และตารางกล่อง (`matrix of nodes`) ถ้าใช้ตารางกล่องในสไลด์ ต้องใส่ `ampersand replacement=\&` ในตัวเลือก และใช้ `\&` คั่นระหว่างช่อง เพราะ `&` ธรรมดาจะทำให้สร้างไฟล์ไม่ผ่าน เนื่องจากสไลด์อ่านเนื้อหาทั้งหมดในครั้งเดียว
+
+**EN.** Always available, with no line to switch on:
+
+**TH.** ใช้ได้เสมอ ไม่ต้องเปิดบรรทัดใด
+
+| What you want / สิ่งที่ต้องการ | What you type / สิ่งที่ต้องพิมพ์ |
+|---|---|
+| Pseudocode / รหัสเทียม | `\begin{algorithm}[H] ... \end{algorithm}` — the `[H]` keeps it on the slide / `[H]` ทำให้อยู่ในสไลด์นั้น |
+| A coloured table row / แถวตารางมีสีพื้น | `\rowcolor{BrandWash} a & b \\` |
+| A caption without a figure / คำบรรยายภาพโดยไม่ต้องมี figure | `\captionof{figure}{...}` |
+
 **EN.** For an ordinary image file, just use:
 **TH.** ถ้าเป็นไฟล์รูปภาพธรรมดา ใช้คำสั่งนี้
 
@@ -392,9 +456,50 @@ $pdf_mode = 5;
 Put the image in your deck's `figures/` folder.
 วางไฟล์รูปไว้ในโฟลเดอร์ `figures/` ของสไลด์นั้น
 
-**EN.** For references: add entries to `refs.bib`, cite them with `\parencite{key}`, and put `\bibliographyframe` where the list should appear.
+### References / เอกสารอ้างอิง
 
-**TH.** สำหรับเอกสารอ้างอิง ให้เพิ่มรายการในไฟล์ `refs.bib` อ้างอิงด้วย `\parencite{คีย์}` และใส่ `\bibliographyframe` ตรงที่ต้องการให้แสดงรายการ
+**EN.** Add entries to `refs.bib`, then cite one with `\cite{key}`. That single command does three things at once:
+
+1. prints **`[1]`** where you wrote it,
+2. prints the **full reference in small type at the bottom of that slide**, so the audience can read it without waiting for the end,
+3. lists the work on the **references slide** at the end, with the same number.
+
+**TH.** เพิ่มรายการในไฟล์ `refs.bib` แล้วอ้างอิงด้วย `\cite{คีย์}` คำสั่งเดียวนี้ทำสามอย่างพร้อมกัน
+
+1. แสดง **`[1]`** ตรงที่พิมพ์คำสั่ง
+2. แสดง **รายการอ้างอิงฉบับเต็มด้วยตัวอักษรขนาดเล็กที่ด้านล่างของสไลด์นั้น** ผู้ฟังจึงอ่านได้ทันทีโดยไม่ต้องรอถึงท้ายเรื่อง
+3. แสดงรายการนั้นใน **สไลด์เอกสารอ้างอิง** ท้ายเรื่อง โดยใช้หมายเลขเดียวกัน
+
+```latex
+Shown by \cite{example2024}.        % [1]  + full reference at the bottom
+Two at once \cite{one,two}.         % [1, 2]
+\cite[p.~4]{example2024}            % [1, p. 4]
+\citequiet{example2024}             % [1] only -- nothing at the bottom
+```
+
+**EN.** The numbers follow the order you first cite things, so `[1]` really is the first work in the talk. Citing the same work twice on one slide still gives one line at the bottom; citing it again on a later slide repeats it there, which is what you want.
+
+**TH.** หมายเลขเรียงตามลำดับที่อ้างอิงครั้งแรก `[1]` จึงเป็นเอกสารชิ้นแรกของการนำเสนอจริง ๆ ถ้าอ้างอิงเอกสารเดียวกันสองครั้งในสไลด์เดียว ด้านล่างจะขึ้นบรรทัดเดียว แต่ถ้าอ้างอิงอีกครั้งในสไลด์ถัดไป จะแสดงซ้ำในสไลด์นั้นด้วย ซึ่งเป็นสิ่งที่ต้องการ
+
+**EN.** Put `\bibliographyframe` where the full list should appear — it is already there in `main.tex`, just before the appendix. A long list splits across several slides on its own.
+
+**TH.** ใส่ `\bibliographyframe` ตรงที่ต้องการให้แสดงรายการทั้งหมด ซึ่งมีอยู่แล้วในไฟล์ `main.tex` ก่อนภาคผนวก ถ้ารายการยาวจะแบ่งเป็นหลายสไลด์ให้เอง
+
+#### If the bottom of the slide gets crowded / ถ้าด้านล่างสไลด์แน่นเกินไป
+
+**EN.** Six references take about a third of the slide. Past four, the build log warns you. Three ways out — put any of these in `main.tex`, or the last one at the top of a single frame:
+
+**TH.** เอกสารอ้างอิงหกรายการกินพื้นที่ประมาณหนึ่งในสามของสไลด์ ถ้าเกินสี่รายการ บันทึกการสร้างไฟล์จะเตือน มีสามวิธีแก้ ใส่คำสั่งเหล่านี้ในไฟล์ `main.tex` หรือใส่คำสั่งสุดท้ายไว้บนสุดของสไลด์นั้น
+
+```latex
+\citequiet{key}             % this one citation gets no bottom line
+\deckcitefootsize{\tiny}    % default; \scriptsize is larger and easier to read
+\deckcitefootoff            % no bottom lines at all, for this frame or the deck
+```
+
+**EN.** One restriction: do not put `\cite` in a frame title, a `\section`, or a caption. Those get written out and typeset again elsewhere, and a bottom reference cannot survive the trip. Use `\citequiet` there.
+
+**TH.** ข้อจำกัดหนึ่งข้อ อย่าใส่ `\cite` ในหัวเรื่องสไลด์ ใน `\section` หรือในคำบรรยายภาพ เพราะข้อความเหล่านั้นจะถูกเขียนออกไปและนำมาเรียงพิมพ์ใหม่ที่อื่น รายการอ้างอิงด้านล่างจะตามไปไม่ได้ ให้ใช้ `\citequiet` แทน
 
 ---
 

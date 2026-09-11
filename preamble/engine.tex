@@ -30,8 +30,12 @@
   % ------------------------------------------------------------------------
   %  XeLaTeX / LuaLaTeX branch
   %  fontspec is what lets LaTeX open .ttf/.otf files directly.
+  %
+  %  [no-math]: without it, fontspec rewires maths to the text fonts --
+  %  Latin variables into Fira Sans, \sin and \mathrm into Latin Modern --
+  %  while Greek stays Computer Modern. See MATHS at the bottom of this file.
   % ------------------------------------------------------------------------
-  \usepackage{fontspec}
+  \usepackage[no-math]{fontspec}
   \defaultfontfeatures{Ligatures=TeX}
 \fi
 
@@ -48,8 +52,25 @@
 \renewcommand{\familydefault}{\sfdefault}
 
 % ---------------------------------------------------------------------------
-%  MATHS
-%  Fira has no matching maths font, so maths stays in Computer Modern. That
-%  is deliberate: it is what most maths papers look like and it reads well
-%  on a projector.
+%  MATHS  --  Computer Modern, exactly as in a LaTeX paper
+%
+%  Every equation uses LaTeX's own maths fonts (CMR, CMMI, CMSY, CMEX, plus
+%  the AMS MSBM for \mathbb) on all three engines. Words inside an equation,
+%  \text{...}, follow the surrounding slide text instead -- which is LaTeX's
+%  own rule, and is what lets Thai inside \text{...} work.
+%
+%  That does NOT happen by default. Two separate things pull maths towards the
+%  text font, and each needs switching off:
+%
+%    beamer    moves maths into the sans font unless its `professionalfonts'
+%              font theme is used  -> theme/beamerfontthemedeck.sty
+%    fontspec  rewires maths letters and operators to the text fonts unless
+%              loaded [no-math]    -> the \usepackage line above
+%
+%  With only one of the two, $f(x) = \alpha x$ still comes out in a mix of
+%  Fira Sans and Computer Modern.
+%
+%  Side effects, all as in a paper: \mathrm \mathbf \mathsf \mathtt are the
+%  Computer Modern ones, not Fira; and maths inside a bold title stays
+%  regular weight.
 % ---------------------------------------------------------------------------

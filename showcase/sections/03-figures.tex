@@ -38,14 +38,73 @@
   \end{tikzpicture}
 \end{frame}
 
+
+% ============================================================================
+%  CITATIONS
+% ============================================================================
+
 \begin{frame}{Citations}
-  \TeX{} was created by Knuth \parencite{knuth1984}, and
-  \textcite{lamport1994} built \LaTeX{} on top of it.
+  \TeX{} was created by Knuth \cite{knuth1984}, and \cite{lamport1994} built
+  \LaTeX{} on top of it. Thai digital typography is surveyed
+  in \cite{tantisiriwat2020}.
 
-  Thai digital typography is surveyed in \parencite{tantisiriwat2020}.
+  \vspace{0.6em}
+  Cite the same work twice \cite{knuth1984} and it still appears once below.
+  \citequiet{mittelbach2021} and \cite*{bringhurst2012} are numbered here but
+  add nothing at the bottom --- only three references are listed, not five.
 
-  \begin{block}{Citation commands}
-    \code{\textbackslash parencite} gives (Author, Year); \quad
-    \code{\textbackslash textcite} gives Author (Year).
+  \begin{block}{What \code{\textbackslash cite} does}
+    Prints \code{[n]} here, and the full reference at the bottom of this
+    slide. The same work keeps the same number on the references slide at the
+    end. \code{\textbackslash citequiet} gives the number only.
   \end{block}
+\end{frame}
+
+\begin{frame}{Citations and overlays}
+  The reference below must stay put as you click through.
+
+  \begin{itemize}
+    \item<1-> Cited on the first overlay \cite{bringhurst2012}
+    \item<2-> A second point appears
+    \item<3-> and a third
+  \end{itemize}
+
+  \vspace{0.6em}
+  \only<3->{Cited only on the last overlay \cite{unicode2024}}
+
+  % \only, not \onslide: \onslide typesets its content on every overlay and
+  % merely hides it, so the citation inside would fire -- and the reference
+  % appear at the bottom -- from overlay 1.
+\end{frame}
+
+% ----------------------------------------------------------------------------
+%  The crowded case. Six references is roughly a quarter of the slide at the
+%  default \tiny -- it fits, but it is the practical limit. Past
+%  \deckcitefootmax (4) the log says so.
+% ----------------------------------------------------------------------------
+\begin{frame}{Six citations on one slide}
+  Typography \cite{bringhurst2012} and typesetting \cite{knuth1984,lamport1994}
+  meet document structure \cite{mittelbach2021}, script support
+  \cite{unicode2024} and Thai layout \cite{tantisiriwat2020}.
+
+  \begin{block}{When it gets crowded}
+    Put \code{\textbackslash deckcitefootoff} at the top of the frame, or use
+    \code{\textbackslash citequiet} for the ones that do not need a full line.
+  \end{block}
+\end{frame}
+
+\begin{frame}{The same slide, quietly}
+  \deckcitefootoff   % frame-local: the frame environment is already a group
+  Typography \cite{bringhurst2012} and typesetting \cite{knuth1984,lamport1994}
+  meet document structure \cite{mittelbach2021}, script support
+  \cite{unicode2024} and Thai layout \cite{tantisiriwat2020}.
+
+  \vspace{0.6em}
+  Same six citations, numbered identically, with
+  \code{\textbackslash deckcitefootoff} in force --- nothing at the bottom, and
+  every work still listed at the end.
+
+  \vspace{0.6em}
+  One at a time instead: \code{\textbackslash citequiet\{key\}}, or
+  \code{\textbackslash cite*\{key\}}, which is the same thing.
 \end{frame}

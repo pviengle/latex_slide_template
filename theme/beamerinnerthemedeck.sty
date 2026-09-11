@@ -11,41 +11,78 @@
 \RequirePackage{tikz}
 
 % ---------------------------------------------------------------------------
-%  Optional logo. Set it in your deck with:
-%      \decklogo{\includegraphics[height=8mm]{path/to/logo.pdf}}
+%  Optional title-page logo, bottom-right in the white band. Set it in your
+%  deck with:
+%      \decklogo{\includegraphics[height=6mm]{path/to/logo.pdf}}
+%  The band is 0.1\paperheight -- 9mm on a 16:9 slide -- so keep it under that.
 %  If never set, nothing is drawn and no space is reserved.
 % ---------------------------------------------------------------------------
 \newcommand{\decklogocontent}{}
 \newcommand{\decklogo}[1]{\renewcommand{\decklogocontent}{#1}}
 
 % ---------------------------------------------------------------------------
+%  Optional FOOTER logo (bottom-right placement only). Empty by default, so
+%  nothing is drawn and the slot reserves no visible space. To use it:
+%      \deckfooterlogo{\includegraphics[height=5mm]{path/to/logo.pdf}}
+%  It sits in the footer between the author and the slide number, with equal
+%  space either side. Placement scaffold only -- point it at your own logo.
+% ---------------------------------------------------------------------------
+\newcommand{\deckfooterlogocontent}{}
+\newcommand{\deckfooterlogo}[1]{\renewcommand{\deckfooterlogocontent}{#1}}
+
+% ---------------------------------------------------------------------------
 %  TITLE PAGE
 % ---------------------------------------------------------------------------
+%  Full-bleed orange cover with white text and a white vertical bar to the
+%  left of the title, matching the pptx cover. The orange is painted with a
+%  page-anchored overlay so it fills edge to edge, ignoring text margins.
+%
+%  \deck@vcentre, not \vfill, above and below the title block. The class
+%  option `t' adds a \vfill of beamer's own under every frame body, which
+%  outvotes one \vfill above the block two to one and lifts the cover title
+%  towards the top. A filll outranks beamer's fill entirely, so the block is
+%  centred the same with or without `t'.
+\newcommand{\deck@vcentre}{\vskip 0pt plus 1filll\relax}
 \defbeamertemplate*{title page}{deck}[1][]{%
-  \vfill
+  \begin{tikzpicture}[remember picture, overlay]
+    % Orange cover, with a white band across the bottom (pptx cover).
+    \fill[BrandAccent]
+      (current page.south west) rectangle (current page.north east);
+    \fill[BrandPaper]
+      (current page.south west)
+      rectangle ([yshift=0.1\paperheight]current page.south east);
+    % Logo placement in the white band, bottom-right (empty by default).
+    \ifx\decklogocontent\empty\else
+      \node[anchor=east, inner sep=0pt]
+        at ([xshift=-\beamer@rightmargin, yshift=0.05\paperheight]current page.south east)
+        {\decklogocontent};
+    \fi
+  \end{tikzpicture}%
+  \deck@vcentre
   \begingroup
     \raggedright
-    % Accent rule above the title
-    {\color{BrandAccent}\rule{18mm}{2.4pt}}\par
-    \vspace{4mm}
-    {\usebeamerfont{title}\usebeamercolor[fg]{title}\inserttitle\par}
-    \ifx\insertsubtitle\empty\else
-      \vspace{1.5mm}
-      {\usebeamerfont{subtitle}\usebeamercolor[fg]{subtitle}\insertsubtitle\par}
-    \fi
-    \vspace{7mm}
-    {\usebeamerfont{author}\usebeamercolor[fg]{author}\insertauthor\par}
-    \ifx\insertinstitute\empty\else
-      \vspace{1mm}
-      {\usebeamerfont{institute}\usebeamercolor[fg]{institute}\insertinstitute\par}
-    \fi
-    \vspace{4mm}
-    {\usebeamerfont{date}\usebeamercolor[fg]{date}\insertdate\par}
-    \ifx\decklogocontent\empty\else
-      \vspace{6mm}{\decklogocontent\par}
-    \fi
+    % White vertical bar, then the title block -- everything in white.
+    \noindent{\color{BrandPaper}\vrule width 3pt}\hspace{4mm}%
+    \begin{minipage}[c]{\dimexpr\paperwidth-\beamer@leftmargin-\beamer@rightmargin-8mm\relax}
+      \color{BrandPaper}%
+      {\usebeamerfont{title}\inserttitle\par}
+      \ifx\insertsubtitle\empty\else
+        \vspace{1.5mm}
+        {\usebeamerfont{subtitle}\insertsubtitle\par}
+      \fi
+      \vspace{7mm}
+      {\usebeamerfont{author}\insertauthor\par}
+      \ifx\insertinstitute\empty\else
+        \vspace{1mm}
+        {\usebeamerfont{institute}\insertinstitute\par}
+      \fi
+      \vspace{4mm}
+      {\usebeamerfont{date}\insertdate\par}
+    \end{minipage}%
   \endgroup
-  \vfill
+  \deck@vcentre
+  % Keep the title block clear of the bottom band.
+  \vskip 0.12\paperheight
 }
 
 % ---------------------------------------------------------------------------
@@ -53,7 +90,7 @@
 %  Auto-inserted before each \section -- see the hook at the bottom.
 % ---------------------------------------------------------------------------
 \defbeamertemplate*{section page}{deck}[1][]{%
-  \vfill
+  \deck@vcentre   % centred with or without `t' -- see TITLE PAGE
   \begingroup
     \raggedright
     {\usebeamercolor[bg]{section number}%
@@ -68,7 +105,7 @@
     \vspace{2mm}
     {\color{BrandRule}\rule{\textwidth}{0.6pt}}
   \endgroup
-  \vfill
+  \deck@vcentre
 }
 
 % ---------------------------------------------------------------------------

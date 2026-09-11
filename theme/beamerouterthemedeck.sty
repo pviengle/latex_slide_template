@@ -9,6 +9,7 @@
 
 \mode<presentation>
 \RequirePackage{pgfmath}
+\RequirePackage{tikz}   % right-edge strip is drawn as a page-anchored overlay
 
 % ---------------------------------------------------------------------------
 %  Theme options
@@ -29,25 +30,54 @@
 \setbeamertemplate{navigation symbols}{}
 
 % ---------------------------------------------------------------------------
+%  THE GAP BETWEEN THE FRAME TITLE AND THE SLIDE BODY
+%
+%  Adjustable from your deck, after \usetheme{deck}:
+%      \decktitlegap{0.4ex}     tighter -- body starts closer to the title
+%      \decktitlegap{1.2ex}     the default
+%
+%  If the body still sits too low, this is usually not the culprit: beamer
+%  centres frame content vertically unless the document class is given the
+%  `t' option. See the tuning block in main.tex.
+% ---------------------------------------------------------------------------
+\newlength{\deck@titlegap}
+\setlength{\deck@titlegap}{1.2ex}
+\newcommand{\decktitlegap}[1]{\setlength{\deck@titlegap}{#1}}
+
+% ---------------------------------------------------------------------------
 %  FRAME TITLE
-%  Title text, an optional subtitle, and a thin rule underneath.
+%  An orange bar to the left of the title, an optional subtitle, and the
+%  segmented strip down the right edge of the slide.
 % ---------------------------------------------------------------------------
 \setbeamertemplate{frametitle}{%
   \nointerlineskip
   \begin{beamercolorbox}[wd=\paperwidth, leftskip=\beamer@leftmargin,
                          rightskip=\beamer@rightmargin,
                          ht=3.2ex, dp=1.6ex]{frametitle}
+    % --- Right-edge segmented strip (orange / gold / gray) ----------------
+    %  Page-anchored overlay (zero size here), so it lands only on frames
+    %  that have a frame title -- content slides, not title/section pages.
+    %  Segment depths are fractions of page height, down from the top-right.
+    \begin{tikzpicture}[remember picture, overlay]
+      \fill[BrandAccent]
+        ([xshift=-6pt]current page.north east)
+        rectangle ([yshift=-0.42\paperheight]current page.north east);
+      \fill[BrandGold]
+        ([xshift=-6pt, yshift=-0.42\paperheight]current page.north east)
+        rectangle ([yshift=-0.50\paperheight]current page.north east);
+      \fill[BrandStripGray]
+        ([xshift=-6pt, yshift=-0.50\paperheight]current page.north east)
+        rectangle ([yshift=-0.58\paperheight]current page.north east);
+    \end{tikzpicture}%
+    % Left vertical orange bar (replaces the old underline rule).
+    {\color{BrandAccent}\vrule width 3pt}\hspace{2.5mm}%
     \usebeamerfont{frametitle}\insertframetitle%
     \ifx\insertframesubtitle\empty\else
-      \\[-0.4ex]{\usebeamerfont{framesubtitle}%
+      \\[-0.4ex]\hspace*{5.5mm}{\usebeamerfont{framesubtitle}%
                  \usebeamercolor[fg]{framesubtitle}\insertframesubtitle}%
     \fi
   \end{beamercolorbox}%
-  \nointerlineskip
-  \hspace*{\beamer@leftmargin}%
-  {\color{BrandRule}%
-   \rule{\dimexpr\paperwidth-\beamer@leftmargin-\beamer@rightmargin\relax}{0.6pt}}%
-  \vspace{1.2ex}
+  \vspace{\deck@titlegap}
 }
 
 % ---------------------------------------------------------------------------
@@ -71,7 +101,9 @@
 
 % ---------------------------------------------------------------------------
 %  FOOTER
-%  Left: short title.   Centre: short author.   Right: slide N / total.
+%  Short title, short author and slide N / total, spread evenly across the
+%  slide. The optional footer logo (\deckfooterlogo) joins them, between the
+%  author and the slide number.
 % ---------------------------------------------------------------------------
 \ifdeck@footer
   \setbeamertemplate{footline}{%
@@ -80,7 +112,7 @@
       \leavevmode\deck@progressline\par
     \fi
     \nointerlineskip
-    \begin{beamercolorbox}[wd=\paperwidth, ht=2.6ex, dp=1.4ex,
+    \begin{beamercolorbox}[wd=\paperwidth, ht=0.075\paperheight, dp=1.4ex,
                            leftskip=\beamer@leftmargin,
                            rightskip=\beamer@rightmargin]{footline}
       \usebeamerfont{footline}%
@@ -88,6 +120,11 @@
       \hfill
       \insertshortauthor%
       \hfill
+      % Bottom-right logo slot (empty by default -- see \deckfooterlogo).
+      \ifx\deckfooterlogocontent\empty\else
+        \raisebox{0ex}{\deckfooterlogocontent}\hspace{0mm}%
+        \hfill
+      \fi
       \insertframenumber\,/\,\inserttotalframenumber%
     \end{beamercolorbox}%
   }

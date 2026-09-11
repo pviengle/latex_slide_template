@@ -1,3 +1,12 @@
+% ============================================================================
+%  showcase/refs.bib
+% ----------------------------------------------------------------------------
+%  Six entries of five different types. They exist so the showcase can prove
+%  that each type prints correctly at the bottom of a slide -- a @book and an
+%  @online do not lay out the same way, and the longest of them is what tells
+%  you whether a reference wraps onto a second line.
+% ============================================================================
+
 @inproceedings{knuth1984,
   author    = {Knuth, Donald E.},
   title     = {The {\TeX}book},
@@ -19,4 +28,34 @@
   booktitle = {Proceedings of the Joint Conference on Computer Science and Software Engineering},
   year      = {2020},
   pages     = {45--52},
+}
+
+@book{bringhurst2012,
+  author    = {Bringhurst, Robert},
+  title     = {The Elements of Typographic Style},
+  edition   = {4},
+  publisher = {Hartley and Marks},
+  location  = {Vancouver},
+  year      = {2012},
+}
+
+% Deliberately long: this is the entry that shows whether a reference still
+% fits on one line at the default \tiny, or wraps onto a second.
+@article{mittelbach2021,
+  author  = {Mittelbach, Frank and Fischer, Ulrike and Wright, Joseph},
+  title   = {Enhancements to the {LaTeX} Kernel: Document Structure, Hooks and
+             the Management of Paragraph Shapes in Complex Page Layouts},
+  journal = {TUGboat: The Communications of the {\TeX} Users Group},
+  volume  = {42},
+  number  = {2},
+  pages   = {171--180},
+  year    = {2021},
+}
+
+@online{unicode2024,
+  author  = {{The Unicode Consortium}},
+  title   = {The Unicode Standard, Version 16.0: South and Southeast Asian
+             Scripts},
+  year    = {2024},
+  organization = {Unicode, Inc.},
 }

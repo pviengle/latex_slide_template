@@ -58,6 +58,18 @@
   belowskip        = 0.6em,
 }
 
+\lstdefinelanguage{SPARQL}{
+  morekeywords={PREFIX,BASE,SELECT,DISTINCT,REDUCED,CONSTRUCT,ASK,DESCRIBE,%
+    WHERE,FROM,NAMED,GRAPH,OPTIONAL,UNION,MINUS,FILTER,BIND,VALUES,SERVICE,%
+    ORDER,BY,ASC,DESC,GROUP,HAVING,LIMIT,OFFSET,AS,a},
+  morekeywords=[2]{STR,LANG,DATATYPE,BOUND,IRI,REGEX,CONTAINS,STRSTARTS,%
+    STRENDS,COUNT,SUM,MIN,MAX,AVG,COALESCE,IF},
+  sensitive     = true,      % keep keywords UPPERCASE; lets lone `a` match too
+  morecomment   = [l]{\#},   % SPARQL comments are #, not --
+  morestring    = [b]",      % "literals"
+  morestring    = [b]',      % 'literals'
+}
+
 \lstset{style=deck}
 
 % ---------------------------------------------------------------------------

@@ -29,6 +29,14 @@
   \end{columns}%
 }
 
+\newcommand{\twocolc}[3][0.5]{%
+  \begin{columns}[c,onlytextwidth]
+    \begin{column}{\dimexpr#1\textwidth-0.5em\relax}#2\end{column}
+    \hfill
+    \begin{column}{\dimexpr\textwidth-#1\textwidth-0.5em\relax}#3\end{column}
+  \end{columns}%
+}
+
 % ---------------------------------------------------------------------------
 %  A slide holding one big idea, vertically centred and large.
 %      \statementframe{The result we care about}

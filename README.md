@@ -70,6 +70,21 @@ renamed `opdc-5stars/` produces `build/opdc-5stars.pdf`.
 **Base setup.** `10pt`, `aspectratio=169`, `dvipsnames`. Fira Sans throughout,
 Computer Modern for maths.
 
+**Maths fonts.** Every equation is set in LaTeX's own fonts — CMR, CMMI,
+CMSY, CMEX, and AMS MSBM for `\mathbb` — the same files a LaTeX paper embeds,
+identical on all three engines. `\text{...}` inside an equation follows the
+surrounding slide text, which is LaTeX's own rule and is what keeps Thai
+inside `\text` working.
+
+None of that is the default. Two things independently drag maths towards the
+text font, and both are switched off: beamer's default font theme moves maths
+into the sans font (`\usefonttheme{professionalfonts}` in the font theme), and
+fontspec rewires maths letters and operators to the text fonts
+(`\usepackage[no-math]{fontspec}` in `engine.tex`). Before this, `$f(x) =
+\alpha x$` came out with *f* and *x* in Fira Sans Italic beside a Computer
+Modern *α* — and under pdfLaTeX the brackets were Computer Modern *Sans* on
+top of that. Verified per glyph with `pdftohtml -xml`, not by eye alone.
+
 **Three engines, one source.** `preamble/engine.tex` branches on `iftex`, so the
 same `main.tex` compiles under pdfLaTeX, XeLaTeX and LuaLaTeX with no edits.
 XeLaTeX is the default here because Thai is switched on; `.latexmkrc` sets it.
@@ -108,6 +123,49 @@ English-only decks.
 TeX Live's Thai support lacks. Without it, pdfLaTeX rejects UTF-8 Thai outright.
 babel's `thai` option is deliberately not used: it switches bytes `0xA1–0xFB` to
 catcode 11 for TIS-620 input, which disables LaTeX's UTF-8 decoder entirely.
+
+**Citations.** `style=numeric, sorting=none`, so `[1]` is genuinely the first
+work cited and the inline number always matches the end list. `\cite{key}` is
+wrapped — not reimplemented — at `\AtBeginDocument`, after hyperref has
+finished patching it, and does two jobs: biblatex prints `[1]`, and the full
+reference is emitted as an unmarked footnote so beamer places it at the bottom
+of that slide, above the footer, `allowframebreaks` still working.
+`\citequiet` (or `\cite*`) gives the number alone.
+
+Two things that are easy to get wrong here. beamer routes biblatex's entry
+label through its own `bibliography item` template, so the theme's
+`\setbeamertemplate{bibliography item}{}` — which exists to drop beamer's
+generic article icon — would silently delete `[1]` from the end list; it is
+`{\insertbiblabel}` instead. And `\fullcite` goes through beamer's
+bibliography drivers, whose `bibliography entry ...` fonts carry absolute
+sizes that override `\deckcitefootsize`; `\deck@citefootline` resets all four
+inside its group, which is why the `[n]` and the reference beside it are the
+same size.
+
+Dedup is per *slide*, keyed on `\the\c@page` and `\the\beamer@slideinframe`.
+A flag reset from a begin-frame hook would look right and be wrong: beamer
+re-typesets a frame body once per overlay, so the reference would vanish the
+moment you pressed the clicker. Keying on the slide being built needs no hook.
+One consequence worth knowing: `\onslide`/`\uncover` typeset their content on
+every overlay and merely hide it, so a citation inside one fires immediately —
+use `\only` if the reference should appear with the text.
+
+**Vertical spacing.** `\documentclass[t,...]`. Beamer centres frame bodies
+vertically unless told otherwise, which is what puts a wide gap under the
+header on any slide that does not fill the page. Three dials go with it, all
+set from the deck rather than the theme: `\decktitlegap` (the skip under the
+title rule, replacing a hard-coded `\vspace{1.2ex}` in the outer theme),
+`\decklinespread` (defined in `base.tex`, raised to 1.25 by `lang-thai.tex`
+for Thai mark clearance) and plain `\parskip`.
+
+`t` works by adding a `\vfill` of beamer's own under every frame body. On
+the title page, whose template centres its block with one `\vfill` above and
+one below, that is two fills against one, and the cover title rises by about
+5 mm. The title and section-page templates therefore centre with
+`\vskip 0pt plus 1filll` (`\deck@vcentre`): a higher order of infinity than
+beamer's `fill`, so it is ignored entirely. Checked by position, not by eye:
+the cover text lands at the same coordinates with `t` as the original
+design did without it.
 
 **Theme resolution.** Each deck's `main.tex` opens by searching for its own
 dependencies rather than being told where they are:
@@ -150,8 +208,14 @@ forward/inverse search.
 
 ## Customising
 
-Colours live in a single seven-line block at the top of
-`theme/beamercolorthemedeck.sty`. Everything else derives from it.
+Colours live in a single block at the top of
+`theme/beamercolorthemedeck.sty`: seven brand colours, which everything else
+derives from, plus the two lower segments of the right-edge strip and the
+eight Okabe-Ito colours for charts.
+
+Logos: `\decklogo` (title slide, in the white band of the cover) and
+`\deckfooterlogo` (every slide, in the footer). Both are empty by default;
+`metadata.tex` has commented examples.
 
 ## Font licence
 

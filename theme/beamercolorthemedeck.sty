@@ -17,13 +17,27 @@
 % ##  BRAND PALETTE  --  >>> REPLACE THESE HEX VALUES WITH YOUR OWN <<<     ##
 % ###########################################################################
 
-\definecolor{BrandPrimary}{HTML}{14375A}   % headings, title bar, structure
-\definecolor{BrandAccent} {HTML}{2E9E8F}   % highlights, links, emphasis
+\definecolor{BrandPrimary}{HTML}{1A1A1A}   % headings / title text / structure (near-black)
+\definecolor{BrandAccent} {HTML}{FF4611}   % brand orange: bars, bullets, block strips, links
 \definecolor{BrandAlert}  {HTML}{C4453B}   % warnings, \alert{}, alerted blocks
 \definecolor{BrandInk}    {HTML}{1A1A1A}   % body text
 \definecolor{BrandMuted}  {HTML}{6B7280}   % footer, captions, de-emphasis
 \definecolor{BrandPaper}  {HTML}{FFFFFF}   % slide background
 \definecolor{BrandWash}   {HTML}{F4F6F8}   % block backgrounds, code background
+
+% Right-edge decorative strip (matches the pptx cover deck): orange/gold/gray.
+\definecolor{BrandGold}     {HTML}{F9C544}
+\definecolor{BrandStripGray}{HTML}{726F6B}
+
+% Official Okabe-Ito palette hex codes
+\definecolor{OkabeItoOrange}{HTML}{E69F00}
+\definecolor{OkabeItoSkyBlue}{HTML}{56B4E9}
+\definecolor{OkabeItoBluishGreen}{HTML}{009E73}
+\definecolor{OkabeItoYellow}{HTML}{F0E442}
+\definecolor{OkabeItoBlue}{HTML}{0072B2}
+\definecolor{OkabeItoVermilion}{HTML}{D55E00}
+\definecolor{OkabeItoReddishPurple}{HTML}{CC79A7}
+\definecolor{OkabeItoBlack}{HTML}{000000}
 
 % ###########################################################################
 % ##  DERIVED  --  no need to edit below this line                         ##
@@ -62,8 +76,8 @@
 \setbeamercolor{progress bar}  {fg=BrandAccent, bg=BrandRule}
 
 % --- Blocks -----------------------------------------------------------------
-\setbeamercolor{block title}        {fg=BrandPaper, bg=BrandPrimary}
-\setbeamercolor{block body}         {fg=BrandInk,   bg=BrandPrimaryLight}
+\setbeamercolor{block title}        {fg=BrandPaper, bg=BrandAccent}
+\setbeamercolor{block body}         {fg=BrandInk,   bg=BrandAccentLight}
 \setbeamercolor{block title example}{fg=BrandPaper, bg=BrandAccent}
 \setbeamercolor{block body example} {fg=BrandInk,   bg=BrandAccentLight}
 \setbeamercolor{block title alerted}{fg=BrandPaper, bg=BrandAlert}

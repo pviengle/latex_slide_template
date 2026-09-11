@@ -1,38 +1,78 @@
 % ============================================================================
 %  preamble/bib.tex  --  citations and reference list
 % ----------------------------------------------------------------------------
-%  Uses biblatex with the biber backend (the modern combination; biber
-%  handles UTF-8 names correctly, which old bibtex does not).
+%  Numeric citations. \cite{key} does TWO things:
+%
+%      1. prints  [1]  where you wrote it
+%      2. prints the FULL reference, small, at the bottom of THAT slide
+%
+%  and the same work appears again, with the same number, on the references
+%  slide at the end. One command, nothing to keep in sync by hand.
 %
 %  In your deck:
-%      \addbibresource{refs.bib}      % after loading this file
-%      \parencite{key}                % (Author, 2024)
-%      \textcite{key}                 % Author (2024)
-%      \footfullcite{key}             % full reference in a footnote
-%      \printbibliography             % on the references slide
+%      \input{bib}
+%      \addbibresource{refs.bib}
+%      ...
+%      Shown by \cite{knuth1984}.   ->  "Shown by [1]."  +  [1] at slide bottom
+%      \citequiet{knuth1984}        ->  [1] only, nothing at the bottom
+%      \cite*{knuth1984}            ->  same as \citequiet, shorter to type
+%      \bibliographyframe           ->  the references slide at the end
+%
+%  \cite takes biblatex's usual optional arguments:
+%      \cite[p.~4]{key}          \cite[see][p.~4]{key}
+%
+%  ---------------------------------------------------------------------------
+%  KNOBS -- put any of these in main.tex AFTER \input{bib}
+%  ---------------------------------------------------------------------------
+%      \deckcitefootsize{\scriptsize}  larger bottom text   (default \tiny)
+%      \deckcitefootrule{0pt}          drop the hairline above the block
+%      \deckcitefootmax{6}             raise the crowding warning threshold
+%      \deckcitefootoff                stop adding bottom references
+%      \deckcitefooton                 turn them back on
+%
+%  \deckcitefootoff and \deckcitefooton also work INSIDE a frame, where they
+%  apply to that frame only -- useful on a related-work slide with six cites.
+%
+%  ---------------------------------------------------------------------------
+%  WHERE NOT TO PUT \cite
+%  ---------------------------------------------------------------------------
+%  Not in \frametitle, \section or \caption. Those are moving arguments: the
+%  text is written out to the .toc/.aux and typeset again elsewhere, and a
+%  footnote cannot survive that. Use \citequiet there.
 % ============================================================================
 
 \usepackage[
-  backend      = biber,
-  style        = authoryear,
-  maxcitenames = 2,      % "Smith et al." rather than a long list on a slide
-  maxbibnames  = 6,
-  giveninits   = true,
-  uniquename   = init,
-  doi          = false,  % slides rarely need these; they eat space
-  isbn         = false,
-  url          = false,
-  eprint       = false,
+  backend     = biber,
+  style       = numeric,   % [1] in the text, [1] in the reference list
+  sorting     = none,      % list ordered by first citation, so [1] really is
+                           % the first work you cite -- numbers read in order
+  maxbibnames = 6,
+  doi         = false,     % slides rarely need these; they eat space
+  isbn        = false,
+  url         = false,
+  eprint      = false,
 ]{biblatex}
 
+\usepackage{etoolbox}      % \forcsvlist -- biblatex loads it too, this line
+                           % is here so the file does not rely on that
+
 % ---------------------------------------------------------------------------
-%  Slide-sized bibliography
+%  THE REFERENCES SLIDE
 % ---------------------------------------------------------------------------
-\setbeamertemplate{bibliography item}{}   % drop the generic article icon
+%  beamer replaces biblatex's entry label with its own "bibliography item"
+%  template. Left empty it drops beamer's generic article icon -- but it also
+%  silently deletes the [1] that numeric style depends on. \insertbiblabel
+%  puts the number back.
+\setbeamertemplate{bibliography item}{\insertbiblabel}
 \renewcommand*{\bibfont}{\scriptsize}
 
 % Keep entries from being hyphenated into a mess in a narrow column
 \appto{\bibsetup}{\raggedright}
+
+%  A frame that breaks across pages is titled "References I", "References II"
+%  and so on. Numbering a list that turned out to fit on one slide just looks
+%  like a mistake, so the numeral starts from the second page.
+\setbeamertemplate{frametitle continuation}[from second]
 
 % ---------------------------------------------------------------------------
 %  A references slide that splits across pages automatically if it is long.
@@ -43,3 +83,162 @@
     \printbibliography[heading=none]
   \end{frame}%
 }
+
+% ===========================================================================
+%  THE PER-SLIDE REFERENCE BLOCK
+% ===========================================================================
+\makeatletter
+
+% --- Knobs -----------------------------------------------------------------
+\newcommand*{\deck@citefootsize}{\tiny}
+\newcommand*{\deckcitefootsize}[1]{\renewcommand*{\deck@citefootsize}{#1}}
+
+\newlength{\deck@citefootrule}
+\setlength{\deck@citefootrule}{0.4pt}
+\newcommand*{\deckcitefootrule}[1]{\setlength{\deck@citefootrule}{#1}}
+
+\newcount\deck@citefootmax  \deck@citefootmax=4
+\newcommand*{\deckcitefootmax}[1]{\deck@citefootmax=#1\relax}
+
+\newif\ifdeck@citefoot  \deck@citefoottrue
+\newcommand*{\deckcitefooton}{\deck@citefoottrue}
+\newcommand*{\deckcitefootoff}{\deck@citefootfalse}
+
+% --- The number, on its own ------------------------------------------------
+%  Prints just [1] for a key, so the bottom line can be labelled with the
+%  same number the reader just saw in the body text.
+\DeclareCiteCommand{\deckcitenum}[\mkbibbrackets]
+  {}
+  {\printfield{labelnumber}}
+  {\multicitedelim}
+  {}
+
+% --- The hairline above the block ------------------------------------------
+%  This is LaTeX's footnote rule, so an ordinary \footnote gets the same line.
+%  \deckcitefootrule{0pt} makes it disappear without disturbing the spacing.
+\renewcommand{\footnoterule}{%
+  \kern-3pt%
+  \hbox{\color{BrandRule}%
+        \vrule width 0.35\textwidth height \deck@citefootrule depth 0pt}%
+  \kern2.6pt%
+}
+
+% --- One bottom line -------------------------------------------------------
+%  An unmarked footnote: beamer already places footnotes at the bottom of the
+%  frame, above the footer, and keeps them working under [allowframebreaks].
+%  The mark is emptied and the footnote counter rolled back, because the line
+%  carries its own [n] instead.
+%
+%  The footnote template is overridden LOCALLY. beamer's default reserves
+%  1.8em for the mark; with no mark that is 1.8em of dead indent on every
+%  line. Ordinary footnotes elsewhere in the deck are untouched.
+%
+%  The four \setbeamerfont lines are not optional. \fullcite goes through
+%  beamer's bibliography drivers, which apply "bibliography entry ..." fonts --
+%  absolute sizes that would override \deckcitefootsize and leave the [n]
+%  label tiny next to a much larger reference. Unstarred \setbeamerfont
+%  changes only the size and leaves series and shape alone, and all four are
+%  local to the group, so the references slide at the end is unaffected.
+\newcommand{\deck@citefootline}[1]{%
+  \begingroup
+    \setbeamerfont{bibliography entry author}  {size=\deck@citefootsize}%
+    \setbeamerfont{bibliography entry title}   {size=\deck@citefootsize}%
+    \setbeamerfont{bibliography entry location}{size=\deck@citefootsize}%
+    \setbeamerfont{bibliography entry note}    {size=\deck@citefootsize}%
+    \setbeamertemplate{footnote}{%
+      \parindent0pt\noindent\raggedright
+      \insertfootnotetext\par
+    }%
+    \renewcommand{\thefootnote}{}%
+    \footnote{{\deck@citefootsize\deckcitenum{#1}\ \fullcite{#1}}}%
+    \addtocounter{footnote}{-1}%
+  \endgroup
+}
+
+% --- Crowding warning ------------------------------------------------------
+%  Counts bottom references on the current slide and says so in the log once
+%  the slide carries more than \deckcitefootmax of them. A crushed slide
+%  should never be a surprise you only discover in the PDF.
+\newcount\deck@citefootn
+\def\deck@citefootwhere{}
+\newcommand{\deck@citefootcount}{%
+  \edef\deck@citefoothere{\the\c@page.\the\beamer@slideinframe}%
+  \ifx\deck@citefoothere\deck@citefootwhere
+    \global\advance\deck@citefootn\@ne
+  \else
+    \global\deck@citefootn\@ne
+    \global\let\deck@citefootwhere\deck@citefoothere
+  \fi
+  \ifnum\deck@citefootn>\deck@citefootmax\relax
+    \PackageWarning{deck-bib}{%
+      \the\deck@citefootn\space bottom references on slide
+      \the\c@page\space -- more than \the\deck@citefootmax.\MessageBreak
+      They will crowd the slide. Use \string\citequiet\space for the
+      extras,\MessageBreak
+      or \string\deckcitefootoff\space at the top of that frame%
+    }%
+  \fi
+}
+
+% --- Dedup, per slide ------------------------------------------------------
+%  Cite the same work twice on one slide and it should appear once at the
+%  bottom; cite it again on a later slide and it should appear there too.
+%
+%  The marker is keyed on the physical page AND on which overlay of the frame
+%  is being built. beamer typesets a frame body once per overlay, so a flag
+%  reset by a begin-frame hook would fire once and then suppress the block on
+%  overlays 2..n -- the reference would vanish the moment you pressed the
+%  clicker. Keying on the slide being built needs no hook at all.
+\newcommand{\deck@citefootone}[1]{%
+  \ifcsname deck@seen@\the\c@page @\the\beamer@slideinframe @#1\endcsname
+  \else
+    \expandafter\gdef
+      \csname deck@seen@\the\c@page @\the\beamer@slideinframe @#1\endcsname{}%
+    \deck@citefootcount
+    \deck@citefootline{#1}%
+  \fi
+}
+
+%  \cite{a,b} is legal, so split the list. \forcsvlist trims stray spaces.
+\newcommand{\deck@citefoot}[1]{%
+  \ifdeck@citefoot
+    \forcsvlist{\deck@citefootone}{#1}%
+  \fi
+}
+
+% --- \cite does both -------------------------------------------------------
+%  Wrapped, not reimplemented, so biblatex keeps full control of what [1]
+%  actually looks like.
+%
+%  Deferred to \AtBeginDocument because hyperref -- which beamer loads for us
+%  -- patches \cite at the end of the preamble. Grabbing it any earlier would
+%  wrap a version that is about to be replaced.
+%  biblatex reads ONE optional argument as the postnote and TWO as prenote +
+%  postnote, so the wrapper has to hand back exactly as many as it was given.
+%  Empty defaults are used rather than -NoValue- markers: an empty argument is
+%  something \detokenize can test for certainty, and there is nothing to pass
+%  through a second command that might mistake the marker for real text.
+\newcommand{\deck@ifempty}[1]{%
+  \if\relax\detokenize{#1}\relax
+    \expandafter\@firstoftwo
+  \else
+    \expandafter\@secondoftwo
+  \fi
+}
+\newcommand{\deck@passcite}[3]{%
+  \deck@ifempty{#1}%
+    {\deck@ifempty{#2}{\deck@origcite{#3}}{\deck@origcite[][#2]{#3}}}%
+    {\deck@ifempty{#2}{\deck@origcite[#1]{#3}}{\deck@origcite[#1][#2]{#3}}}%
+}
+
+\NewDocumentCommand{\citequiet}{O{} O{} m}{\deck@passcite{#1}{#2}{#3}}
+
+\AtBeginDocument{%
+  \let\deck@origcite\cite
+  \RenewDocumentCommand{\cite}{s O{} O{} m}{%
+    \deck@passcite{#2}{#3}{#4}%
+    \IfBooleanF{#1}{\deck@citefoot{#4}}%
+  }%
+}
+
+\makeatother

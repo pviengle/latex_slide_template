@@ -21,6 +21,8 @@
 \usepackage{multirow}
 \usepackage{ragged2e}      % \justifying, better \raggedright with hyphenation
 \usepackage{microtype}     % subtle spacing improvements; free quality win
+\usepackage{algorithm2e}   % algorithm
+\usepackage{caption}       % caption
 
 % --- Graphics --------------------------------------------------------------
 \usepackage{graphicx}
@@ -42,6 +44,10 @@
 % ---------------------------------------------------------------------------
 \usepackage{silence}
 
+
+% -------
+\usepackage{colortbl}
+
 % Beamer warns that \RequirePackage'ing a font package in a theme "may not
 % work as expected". It does work here; the warning is noise on every run.
 \WarningFilter{beamer}{Unknown document class option}
@@ -55,3 +61,18 @@
 % ---------------------------------------------------------------------------
 \setlength{\parskip}{0.5em}
 \setlength{\parindent}{0pt}
+
+% ---------------------------------------------------------------------------
+%  LINE SPACING
+%  \decklinespread{1.15} from your deck tightens every line on every slide.
+%  Left alone it is LaTeX's 1.0 -- except that preamble/lang-thai.tex raises
+%  it to 1.25, because Thai stacks vowel and tone marks above the baseline and
+%  hangs vowels below it, and Latin leading is not tall enough to clear both.
+%
+%  Below about 1.15 those marks start touching the descenders of the line
+%  above, so lower it only on a deck with no Thai in it.
+%
+%  \selectfont is what makes the change take effect; \linespread on its own
+%  is stored and ignored until the next font selection.
+% ---------------------------------------------------------------------------
+\newcommand{\decklinespread}[1]{\linespread{#1}\selectfont}

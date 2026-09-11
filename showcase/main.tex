@@ -13,7 +13,9 @@
 %      latexmk -lualatex       (real Sarabun)
 % ============================================================================
 
-\documentclass[dvipsnames,10pt,aspectratio=169]{beamer}
+% `t' puts slide content at the top instead of letting beamer centre it
+% vertically. See the tuning block in the root main.tex.
+\documentclass[t,dvipsnames,10pt,aspectratio=169]{beamer}
 
 % Find the folder holding theme/ and preamble/ by searching upward, so this
 % deck builds wherever it is copied to. See decks/_template/main.tex for the

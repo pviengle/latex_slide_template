@@ -22,12 +22,19 @@
 %  $pdf_mode = 1 in .latexmkrc for a slightly faster build.
 % ============================================================================
 
-\documentclass[dvipsnames,10pt,aspectratio=169]{beamer}
-%                |         |     |
-%                |         |     +-- 16:9 widescreen (use 43 for old 4:3)
-%                |         +-------- base font size
-%                +------------------ unlocks 68 extra colour names
-%                                    (RoyalBlue, BrickRed, ForestGreen, ...)
+\documentclass[t,dvipsnames,10pt,aspectratio=169]{beamer}
+%              | |         |     |
+%              | |         |     +-- 16:9 widescreen (use 43 for old 4:3)
+%              | |         +-------- base font size
+%              | +------------------ unlocks 68 extra colour names
+%              |                     (RoyalBlue, BrickRed, ForestGreen, ...)
+%              +-------------------- content starts at the TOP of the slide
+%
+%  About that `t': without it beamer centres the body of every frame
+%  vertically, so a slide with three bullets on it pushes them halfway down
+%  the page and leaves a wide gap under the header. Delete the `t' to get
+%  that centring back, or write \begin{frame}[c] on the one slide that wants
+%  it. See the tuning block below for the rest of the vertical spacing.
 
 % ---------------------------------------------------------------------------
 %  WHERE THE SHARED FILES LIVE  --  nothing to edit here, ever
@@ -86,9 +93,32 @@
 \input{lang-thai}
 
 % --- Bibliography ----------------------------------------------------------
-%  Uncomment if this deck cites anything.
-% \input{bib}
-% \addbibresource{refs.bib}
+%  \cite{key} prints [1] where you write it AND the full reference, small, at
+%  the bottom of that slide. The same work keeps the same number on the
+%  references slide at the end (\bibliographyframe, further down).
+%
+%  \citequiet{key} gives the number without the bottom line.
+%
+%  Delete these two lines and \bibliographyframe if the talk cites nothing.
+\input{bib}
+\addbibresource{refs.bib}
+
+% --- Tuning ----------------------------------------------------------------
+%  Everything adjustable, in one place. All four are optional; the values
+%  shown are the defaults, so uncomment a line only to change it.
+%
+%  Vertical spacing, if the slide body still does not sit where you want:
+% \decktitlegap{1.2ex}        % gap between the frame title and the body
+% \decklinespread{1.25}       % line spacing; 1.15 is tighter, see base.tex
+% \setlength{\parskip}{0.5em} % space between paragraphs and list items
+%
+%  The per-slide reference block:
+% \deckcitefootsize{\tiny}    % \scriptsize if \tiny is too small to read
+% \deckcitefootrule{0.4pt}    % 0pt removes the hairline above the block
+% \deckcitefootmax{4}         % warn in the log past this many on one slide
+% \deckcitefootoff            % stop adding them entirely (also works inside
+%                             % a single frame, where it applies to that
+%                             % frame only)
 
 % --- Who / what / when -----------------------------------------------------
 \input{metadata}
@@ -108,7 +138,9 @@
 \input{sections/02-method}
 
 % --- References ------------------------------------------------------------
-% \bibliographyframe
+%  Every work cited anywhere in the talk, numbered as it was cited. Splits
+%  across several slides on its own if the list is long.
+\bibliographyframe
 
 % --- Appendix --------------------------------------------------------------
 %  Slides after \appendix are not counted in the "N / total" footer.

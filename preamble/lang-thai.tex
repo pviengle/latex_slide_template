@@ -131,8 +131,12 @@
   %  and hangs vowels below it (ปรุง). Latin line spacing is not tall enough
   %  for that: the tone marks of one line collide with the descenders of the
   %  line above. This opens the lines up just enough to clear both.
+  %
+  %  Adjustable from your deck -- \decklinespread{1.15} for a deck with only
+  %  a little Thai in it, which also lifts the body text on every slide.
+  %  Much below 1.15 and the marks start colliding again.
   % -------------------------------------------------------------------------
-  \linespread{1.25}
+  \decklinespread{1.25}
 
   \makeatletter
   %  Remember the family name fontspec generated for Sarabun, so the switch

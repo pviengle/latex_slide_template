@@ -18,6 +18,20 @@
 \usefonttheme{default}
 \renewcommand{\familydefault}{\sfdefault}
 
+% ---------------------------------------------------------------------------
+%  MATHS IN THE PAPER FONT
+%  beamer's default font theme moves maths into the slide's sans font: Latin
+%  variables come out in Fira Sans, brackets and \sin in Computer Modern
+%  *Sans*, and Greek -- which Fira cannot supply to maths -- stays in
+%  Computer Modern. $f(x) = \alpha x$ ends up mixing three typefaces.
+%
+%  professionalfonts tells beamer to leave the maths fonts alone, so they stay
+%  LaTeX's own: exactly what a LaTeX paper uses. Under XeLaTeX/LuaLaTeX,
+%  fontspec has to be told the same thing -- see [no-math] in
+%  preamble/engine.tex. Either one alone still leaves a mix.
+% ---------------------------------------------------------------------------
+\usefonttheme{professionalfonts}
+
 % --- Title slide ------------------------------------------------------------
 \setbeamerfont{title}    {size=\LARGE, series=\bfseries}
 \setbeamerfont{subtitle} {size=\large, series=\mdseries}
